@@ -1,0 +1,28 @@
+/*阴影*/
+.box-shadow(@x: 0; @y: 0; @blur: 1px; @color: #ddd; @inset: default){
+    .color ( @a ) when( isnumber(@a) ){
+        @color:rgba(0, 0, 0, @a);
+    }
+    .inset (@a) when (@a = default) {
+        @inset:; //清空
+    }
+    .color(@color);
+    .inset(@inset);
+    box-shadow:@inset @x @y @blur @color;
+}
+
+/*圆角*/
+
+
+/*三角*/
+
+
+/*盒子*/
+.box-sizing(@boxmodel: border-box){
+    box-sizing: @boxmodel;
+}
+
+/*透明度*/
+.opacity(@opacity){
+  opacity: @opacity;
+}
