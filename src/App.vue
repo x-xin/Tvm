@@ -1,27 +1,40 @@
 <template>
-  <div id="app">
-    <app-swipe></app-swipe>
-    <app-main></app-main>
-    <app-footer></app-footer>
-  </div>
+    <div id="app">
+        <app-swipe></app-swipe>
+        <transition name="fade">
+            <router-view></router-view>
+        </transition>
+        <app-footer></app-footer>
+    </div>
 </template>
 
 <script>
 import AppSwipe from './components/AppSwipe'
-import AppMain from './components/AppMain'
 import AppFooter from './components/AppFooter'
 
 export default {
   name: 'app',
   components: {
-    AppSwipe,AppMain,AppFooter
+    AppSwipe,AppFooter
   }
 }
 </script>
 
 <style lang="less">
-@import "./less/style.less";
-#app {
+    @import "./less/style.less";
+    // common
+    .main{
+        width: 100%;
+        max-height: 1000px;
+        background-color: #fff;
+    }
 
-}
+    /* fade */
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s
+    }
+    .fade-enter, .fade-leave-active {
+        opacity: 0
+    }
+
 </style>

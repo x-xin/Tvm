@@ -1,30 +1,35 @@
 <template>
-    <div class="footer">技术支持.厦门欣欣旅游信息有限公司</div>
+    <div class="footer">
+        技术支持：厦门欣欣信息有限公司&福建智慧旅游有限公司&nbsp;&nbsp;<a href="#">设置</a>
+    </div>
 </template>
 <script>
 export default {
   name: 'footer',
   data () {
     return {
-      msg: 'this is footer'
+      // 
     }
   }
 }
 </script>
-<style>
-*{
-    margin: 0;padding: 0;
-}
+<style lang="less">
     .footer{
         width: 100%;
-        background-color: #333;
+        margin-top: 90px;
+        height: 70px;
+        line-height: 70px;
         text-align: center;
-        height: 100px;
-        line-height: 100px;
-        color: #fff;
+        color: #999999;
+        background-color: #fff;
+        font-size: 20px;
 
         position: fixed;
         bottom: 0;
-        left: ;
+        left:0 ;
+
+        a{
+            color: #109afa;
+        }
     }
 </style>

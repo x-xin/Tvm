@@ -191,8 +191,8 @@
 }
 /* Bullets */
 .swiper-pagination-bullet {
-  width: 8px;
-  height: 8px;
+  width: 20px;
+  height: 20px;
   display: inline-block;
   border-radius: 100%;
   background: #000;
@@ -216,7 +216,7 @@ button.swiper-pagination-bullet {
 }
 .swiper-pagination-bullet-active {
   opacity: 1;
-  background: #007aff;
+  background: #ff9604;
 }
 .swiper-pagination-white .swiper-pagination-bullet-active {
   background: #fff;
