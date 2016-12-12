@@ -67,10 +67,12 @@ export default {
 <style lang='less'>
 	.swiper-container{
 		width:100%;
+		height: 750px;
 		cursor: pointer;
 		img{
 			display: block;
 			width: 100%;
+			height: 750px;
 		}
 	}
 </style>

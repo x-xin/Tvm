@@ -29,11 +29,13 @@
             font-size: 66px;
             color: #666;
             text-align: center;
+            height: 100px;
             line-height: 100px;
         }
         h2{
-            margin-top: 25px;
+            padding-top: 28px;
             font-size: 36px;
+            height: 60px;
             line-height: 60px;
         }
         .menu{
@@ -55,6 +57,7 @@
             text-align: center;
             font-size: 26px;
             color: #666;
+            height: 50px;
             line-height: 50px;
         }
     }
