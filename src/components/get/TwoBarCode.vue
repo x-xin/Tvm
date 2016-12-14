@@ -1,9 +1,9 @@
 <template>
-    
+    <div>二维码</div>
 </template>
 <script>
-    export default {
-        name: 'idcard',
+    export default{
+        name: 'twobarcode',
         data () {
             return {
 

@@ -16,17 +16,15 @@ export default {
 <style lang="less">
     .footer{
         width: 100%;
-        margin-top: 100px;
         height: 70px;
         line-height: 70px;
         text-align: center;
         color: #999999;
-        background-color: #fff;
         font-size: 20px;
 
-        // position: fixed;
-        // bottom: 0;
-        // left:0 ;
+        position: fixed;
+        bottom: 0;
+        left:0 ;
 
         a{
             color: #109afa;

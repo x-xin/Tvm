@@ -1,9 +1,9 @@
 <template>
     <div id="app">
         <app-swipe></app-swipe>
-        <transition name="fade">
+        <!-- <transition name="fade"> -->
             <router-view></router-view>
-        </transition>
+        <!-- </transition> -->
         <app-footer></app-footer>
     </div>
 </template>
@@ -25,8 +25,8 @@ export default {
     // common
     .main{
         width: 100%;
-        max-height: 1000px;
-        background-color: #fff;
+        height: 1000px;
+        overflow:hidden;
     }
 
     /* fade */

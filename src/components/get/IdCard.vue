@@ -1,11 +1,9 @@
 <template>
-    <div class="buytickets">
-        这是购票页面部分
-    </div>
+    <div>身份证取票</div>
 </template>
 <script>
     export default {
-        name: 'buytickets',
+        name: 'idcard',
         data () {
             return {
 
