@@ -21,8 +21,14 @@
         <!-- 票务列表 -->
         <div class="ticketswrap">
             <div class="ticketslists">
-                <label v-for="item in ticketslists" @click="choice(item)">
-                    <i class="icon-unchoice" v-bind:class="{'icon-choice': item.ischoice}"></i><span>{{item.name}}</span><em><i>￥</i>{{item.price}}</em>
+                <label v-for="item in freePrice" @click="choice(item)">
+                    <i class="icon-unchoice" v-bind:class="{'icon-choice': item.ischoice}"></i>
+
+                    <span>{{item.name}}</span>
+                    <em v-if="item.free">
+                        {{ item.free }}
+                    </em>
+                    <em v-else><i>￥</i>{{item.price}}</em>
                 </label>
             </div>           
         </div>
@@ -47,27 +53,27 @@
                     {
                         id:"11222",
                         name:"山西博物馆珍藏票",
-                        price:99
+                        price: 99
                     },
                     {
                         id:"11223",
                         name:"山西博物馆纪念票",
-                        price:50
+                        price: 8
                     },
                     {
                         id:"11224",
                         name:"山西博物馆妇女票",
-                        price:50
+                        price: 50 
                     },
                     {
                         id:"11225",
                         name:"山西博物馆青年票",
-                        price:0
+                        price: 0
                     },
                     {
                         id:"11226",
                         name:"山西博物馆儿童票",
-                        price:10
+                        price: 10
                     }
                 ],
                 showbtn: false,
@@ -104,6 +110,8 @@
                 console.log(item)
                 console.log(item.price)
                 console.log(item.id)
+
+                console.log(this.freePrice)
             },
             confirmTickets () {
                 if(this.showbtn){
@@ -113,16 +121,15 @@
             }
         },
         computed: {
-            // freePrice () {
-            //     for (let i = 0; i < this.ticketslists.length; i++) {
-            //         if(this.ticketslists[i].price === 0){
-            //             this.ticketslists[i].free = "免费"
-            //         }
-            //     }
-            //     return{
-            //         this.ticketslists
-            //     }
-            // }
+            freePrice () {
+                for (let i = 0; i < this.ticketslists.length; i++) {
+                    this.ticketslists[i].ischoice = false
+                    if(this.ticketslists[i].price === 0){
+                        this.ticketslists[i].free = "免费"
+                    }
+                }
+                return this.ticketslists
+            }
         }
 
     }
