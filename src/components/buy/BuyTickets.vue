@@ -10,7 +10,7 @@
             }
         },
         mounted () {
-            console.log(this.$router)
+            // console.log(this.$router)
             // this.$router.push({ name: 'home'})
         }
     }

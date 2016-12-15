@@ -21,9 +21,8 @@
         <!-- 票务列表 -->
         <div class="ticketswrap">
             <div class="ticketslists">
-                <label v-for="item in freePrice" @click="choice(item)">
-                    <i class="icon-unchoice" v-bind:class="{'icon-choice': item.ischoice}"></i>
-
+                <label v-for="(item,index) in freePrice" @click="choice(item,index)" :ischoice="item.ischoice">
+                    <i class="icon-unchoice" :class="{'icon-choice': item.ischoice}"></i>
                     <span>{{item.name}}</span>
                     <em v-if="item.free">
                         {{ item.free }}
@@ -51,79 +50,74 @@
             return {
                 ticketslists:[
                     {
-                        id:"11222",
-                        name:"山西博物馆珍藏票",
-                        price: 99
+                        id: "a1",
+                        name: "山西博物馆珍藏票",
+                        price: 10,
+                        ischoice:false
                     },
                     {
-                        id:"11223",
-                        name:"山西博物馆纪念票",
-                        price: 8
+                        id: "a2",
+                        name: "山西博物馆纪念票",
+                        price: 0,
+                        ischoice:false
                     },
                     {
-                        id:"11224",
-                        name:"山西博物馆妇女票",
-                        price: 50 
+                        id: "a3",
+                        name: "山西博物馆妇女票",
+                        price: 50,
+                        ischoice:false
                     },
                     {
-                        id:"11225",
-                        name:"山西博物馆青年票",
-                        price: 0
+                        id: "a4",
+                        name: "山西博物馆青年票",
+                        price: 0,
+                        ischoice:false
                     },
                     {
-                        id:"11226",
-                        name:"山西博物馆儿童票",
-                        price: 10
+                        id: "a5",
+                        name: "山西博物馆儿童票",
+                        price: 10,
+                        ischoice:false
                     }
                 ],
                 showbtn: false,
                 total: 0,
-                ticketsid: [] //  传递数据给后端
+                redata: []
             }
         },
         methods: {
-            choice (item) { 
+            choice (item,index) { 
 
-                // 选择当前列表
-                item.ischoice = !item.ischoice
+                this.total = 0
+                this.showbtn = false
+                this.redata = []
 
-                // 支付金额
-                if(item.ischoice){
-                    this.total = this.total + item.price
-                    this.ticketsid.push(item.id);
-                }else{
-                    this.total = this.total - item.price
-                    this.ticketsid.pop();
-                }
-
-                // 按钮激活
-
-                if(this.ticketsid.length === 0){
-                    this.showbtn = false
-                }else{
+                if(!item.ischoice){
+                    this.total += item.price
                     this.showbtn = true
+                    this.redata.push(item.id,this.total);
                 }
 
-                console.log(this.ticketsid);
+                item.ischoice = !item.ischoice
+            
+                for (let i = 0; i < this.freePrice.length; i++) {
+                    if(i === index){
+                        continue
+                    }
+                    this.freePrice[i].ischoice = false
+                }
 
-
-                console.log(item)
-                console.log(item.price)
-                console.log(item.id)
-
-                console.log(this.freePrice)
             },
             confirmTickets () {
                 if(this.showbtn){
-                    // 提交数据给后端
-                    alert("亲爱的,我正在提交数据哦");
+                    console.log(this.redata);
                 }
             }
         },
-        computed: {
+        computed: {  //
             freePrice () {
                 for (let i = 0; i < this.ticketslists.length; i++) {
-                    this.ticketslists[i].ischoice = false
+
                     if(this.ticketslists[i].price === 0){
                         this.ticketslists[i].free = "免费"
                     }
@@ -131,7 +125,6 @@
                 return this.ticketslists
             }
         }
-
     }
 </script>
 <style lang="less">
