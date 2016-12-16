@@ -1,5 +1,32 @@
 <template>
-    <div>身份证取票</div>
+    <div class="main get-tickets">
+        <!-- 头部导航 -->
+        <div class="buy-menu">
+            <div>
+                <em>1</em>
+                <span>选择方式</span>
+                <i></i>
+            </div>
+            <div class="cur">
+                <em>2</em>
+                <span>取票</span>
+                <i></i>
+            </div>
+            <div>
+                <em>3</em>
+                <span>取票成功</span>
+            </div>
+        </div>
+        <div class="validate">
+            <img src="../../assets/identity.gif" width="100%" height="100%">
+            <span>请将您的身份证平放在识别处</span>
+        </div>
+        <!-- 按钮世界 -->
+        <div class="buy-btn">
+            <router-link class="backhome-btn" :to="{ name: 'home'}"></router-link>
+            <router-link class="pre-btn" :to="{ name: 'getmenu'}"></router-link>
+        </div>
+    </div>    
 </template>
 <script>
     export default {
@@ -12,5 +39,24 @@
     }
 </script>
 <style lang="less">
-    
+    .get-tickets{  
+        .validate{
+            width: 700px;
+            margin: 70px auto;
+
+            img{
+                display: block;
+            }
+            span{
+                display: block;
+                margin-top: 20px;
+                text-align: center;
+                height: 50px;
+                line-height: 50px;
+                color: #666;
+                font-size: 26px;
+
+            }
+        }   
+    }
 </style>

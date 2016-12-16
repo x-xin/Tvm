@@ -8,12 +8,15 @@ import Home from './components/Home.vue'
 import BuyTickets from './components/buy/BuyTickets.vue'
 import Validate from './components/buy/Validate.vue'
 import TicketsLists from './components/buy/TicketsLists.vue'
+import BuySuccess from './components/buy/Success.vue'
 
 import GetTickets from './components/get/GetTickets.vue'
 import GetMenu from './components/get/GetMenu.vue'
 import Code from './components/get/Code.vue'
 import IdCard from './components/get/IdCard.vue'
 import TwoBarCode from './components/get/TwoBarCode.vue'
+import GetSuccess from './components/get/Success.vue'
+
 
 Vue.use(VueRouter)
 
@@ -40,6 +43,11 @@ const routes = [
                 name: 'ticketslists',
                 path: 'ticketslists',
                 component: TicketsLists
+            },
+            {
+                name: 'buysuccess',
+                path: 'buysuccess',
+                component: BuySuccess
             }
         ]
     },
@@ -67,6 +75,11 @@ const routes = [
                 name: 'twobarcode',
                 path: 'twobarcode',
                 component: TwoBarCode
+            },
+            {
+                name: 'getsuccess',
+                path: 'getsuccess',
+                component: GetSuccess
             }
         ]
     }

@@ -3,7 +3,7 @@
         <h2>欢迎光临</h2>
         <h1>山西博物馆</h1>
 
-        <div v-if="hasnet">
+        <div>
             <div class="menu">
                 <router-link :to="{ name: 'buytickets'}"><img src="../assets/set-btn.png" width="100%" height="100%;"></router-link>
                 <router-link :to="{ name: 'gettickets'}"><img src="../assets/get-btn.png" width="100%" height="100%;"></router-link>
@@ -11,12 +11,12 @@
             <p>温馨提示：若您在自助购票/取票过程中遇到问题</p>
             <p>请拨打电话 0351-8789015</p>
         </div>
-        <div v-else class="notnet">
+        <!-- <div v-else class="notnet">
             <img class="netimg" src="../assets/net.png">
             <p class="diff">网络异常</p>
             <p>请点击刷新或联系管理员处理</p>
             <div class="refurbish-btn" @click="refurbishNet()"><img src="../assets/refurbish-btn.png" width="100%" height="100%"></div>
-        </div>
+        </div> -->
             
     </div>
 </template>
@@ -29,9 +29,9 @@
             }
         },
         methods:{
-            refurbishNet () {
-                return this.hasnet = true
-            }
+            // refurbishNet () {
+            //     return this.hasnet = true
+            // }
         }
     }
 </script>

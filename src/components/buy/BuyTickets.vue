@@ -88,11 +88,23 @@
             &.backhome-btn{
                 background: url(../../assets/backhome-1-btn.png) no-repeat;
             }
+            &.backhome-2-btn{
+                background: url(../../assets/backhome-2-btn.png) no-repeat;
+            }
             &.confirm-1-btn{
                 background: url(../../assets/confirm-1-btn.png) no-repeat;
             }
             &.confirm-2-btn{
                 background: url(../../assets/confirm-2-btn.png) no-repeat;
+            }
+            &.pre-btn{
+                background: url(../../assets/pre-btn.png) no-repeat;
+            }
+            &.gotobuy-btn{
+                background: url(../../assets/gotobuy-btn.png) no-repeat;
+            }
+            &.gotoget-btn{
+                background: url(../../assets/gotoget-btn.png) no-repeat;
             }
         }
     }

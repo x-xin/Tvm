@@ -1,9 +1,26 @@
 <template>
-    <div>
+    <div class="main get-tickets">
+        <!-- 头部导航 -->
+        <div class="buy-menu">
+            <div class="cur">
+                <em>1</em>
+                <span>选择方式</span>
+                <i></i>
+            </div>
+            <div>
+                <em>2</em>
+                <span>取票</span>
+                <i></i>
+            </div>
+            <div>
+                <em>3</em>
+                <span>取票成功</span>
+            </div>
+        </div>
         <div class="style-choice">
             <router-link class="id-card-btn" :to="{ name: 'idcard'}"></router-link>
             <router-link class="two-code-btn" :to="{ name: 'twobarcode'}"></router-link>
-            <router-link class="identifying-code-btn" :to="{ name: 'code'}"></router-link>           
+            <router-link class="identifying-code-btn" :to="{ name: 'code'}"></router-link>          
         </div>
         <!-- 按钮世界 -->
         <div class="buy-btn">

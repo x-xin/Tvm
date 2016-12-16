@@ -52,32 +52,37 @@
                     {
                         id: "a1",
                         name: "山西博物馆珍藏票",
-                        price: 10,
-                        ischoice:false
+                        price: 0
                     },
                     {
                         id: "a2",
                         name: "山西博物馆纪念票",
-                        price: 0,
-                        ischoice:false
+                        price: 0
                     },
                     {
                         id: "a3",
                         name: "山西博物馆妇女票",
-                        price: 50,
-                        ischoice:false
+                        price: 10
                     },
                     {
                         id: "a4",
                         name: "山西博物馆青年票",
-                        price: 0,
-                        ischoice:false
+                        price: 0
                     },
                     {
                         id: "a5",
                         name: "山西博物馆儿童票",
-                        price: 10,
-                        ischoice:false
+                        price: 0
+                    },
+                    {
+                        id: "a6",
+                        name: "山西博物馆儿童票",
+                        price: 70
+                    },
+                    {
+                        id: "a7",
+                        name: "山西博物馆儿童票",
+                        price: 90
                     }
                 ],
                 showbtn: false,
@@ -109,15 +114,19 @@
 
             },
             confirmTickets () {
+                // 数据提交
                 if(this.showbtn){
-                    console.log(this.redata);
+                    console.log(this.redata)
+                    alert(this.redata)
+                }else{
+                    alert("请选择票类")
                 }
             }
         },
-        computed: {  //
+        computed: {  
+            // 计算￥0 显示免费
             freePrice () {
                 for (let i = 0; i < this.ticketslists.length; i++) {
-
                     if(this.ticketslists[i].price === 0){
                         this.ticketslists[i].free = "免费"
                     }
