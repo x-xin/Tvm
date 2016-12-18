@@ -21,13 +21,20 @@
         <!-- 票务列表 -->
         <div class="ticketswrap">
             <div class="ticketslists">
-                <label v-for="(item,index) in freePrice" @click="choice(item,index)" :ischoice="item.ischoice">
-                    <i class="icon-unchoice" :class="{'icon-choice': item.ischoice}"></i>
+                <label 
+                    v-for="(item,index) in freePrice" 
+                    @click="choice(item,index)" 
+                    :ischoice="item.ischoice"
+                >
+                    <i class="icon-unchoice" 
+                        :class="{'icon-choice': item.ischoice}">    
+                    </i>
                     <span>{{item.name}}</span>
                     <em v-if="item.free">
                         {{ item.free }}
                     </em>
                     <em v-else><i>￥</i>{{item.price}}</em>
+                    
                 </label>
             </div>           
         </div>

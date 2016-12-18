@@ -45,17 +45,15 @@
             }
         },
         mounted () {
-            let _this = this
-            let control = function(){
-                if(_this.time === 0){
-                    clearInterval(t);
-                    _this.$router.push({name:'home'}); // 去首页
-                }else{
-                    _this.time = _this.time - 1
-                }
-            }
 
-            let t = setInterval(control,1000);
+            let t = setInterval(() => {
+                if(this.time === 0){
+                    clearInterval(t);
+                    this.$router.push({name:'home'}); // 去首页
+                }else{
+                    this.time = this.time - 1
+                }
+            },1000);
 
             return this.time
         }

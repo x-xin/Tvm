@@ -49,7 +49,7 @@
         name: 'twobarcode',
         data () {
             return {
-                shownumData: ["5","1","2","5","1","2"," "," ",]
+                shownumData: [" "," "," "," "," "," "," "," ",]
             }
         },
         methods: {
