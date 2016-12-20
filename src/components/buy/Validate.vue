@@ -21,7 +21,7 @@
         <!-- 验证身份 -->
         <div class="validate">
             <img src="../../assets/identity.gif" width="100%" height="100%">
-            <span>请将您的身份证平放在识别处</span>
+            <span>请将您的身份证平放在识别处{{ idname }} {{ idnum }}</span>
         </div>
 
         <!-- 按钮世界 -->
@@ -36,13 +36,30 @@
         name: 'validate',
         data () {
             return {
-
+                idname: "",
+                idnum: "" 
             }
         },
         mounted () {
-            console.log(this.$router)
-            // this.$router.push({ name: 'home'})
-        }
+
+            // setTimeout(() => {
+
+            //     let TicketPIDRd = new ActiveXObject("CncnTicket.PIDRd");
+
+            //     if(TicketPIDRd){
+            //         // 连接身份证读卡机具
+            //         TicketPIDRd.connect();
+            //     }
+            //     if(TicketPIDRd && TicketPIDRd.read() == 1 && TicketPIDRd.isReadOK() == 1){
+
+
+            //         // 获取姓名和身份证号
+            //         this.idname = TicketPIDRd.pname
+            //         this.idnum = TicketPIDRd.pidnum
+
+            //     }
+            // },3000)
+        }        
     }
 </script>
 <style lang="less">

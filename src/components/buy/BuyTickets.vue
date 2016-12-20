@@ -6,12 +6,7 @@
         name: 'buytickets',
         data () {
             return {
-
             }
-        },
-        mounted () {
-            // console.log(this.$router)
-            // this.$router.push({ name: 'home'})
         }
     }
 </script>

@@ -41,7 +41,8 @@
 
         <!-- 按钮世界 -->
         <div class="buy-btn money">
-            <router-link class="cancel-btn" :to="{ name: 'home'}"></router-link>
+            <!-- <router-link class="cancel-btn" :to="{ name: 'home'}"></router-link> -->
+            <a @click="cancel" class="cancel-btn"></a>
             <a class="confirm-1-btn" v-bind:class="{'confirm-2-btn': showbtn}" @click="confirmTickets()"></a> <!-- confirm-2-btn -->
             <div class="pay">
                 <span>共需支付：</span>
@@ -57,39 +58,39 @@
             return {
                 ticketslists:[
                     {
-                        id: "a1",
-                        name: "山西博物馆珍藏票",
-                        price: 0
+                        "id": "a1",
+                        "name": "山西博物馆珍藏票",
+                        "price": 0
                     },
                     {
-                        id: "a2",
-                        name: "山西博物馆纪念票",
-                        price: 0
+                        "id": "a2",
+                        "name": "山西博物馆儿童票",
+                        "price": 70
                     },
                     {
-                        id: "a3",
-                        name: "山西博物馆妇女票",
-                        price: 10
+                        "id": "a3",
+                        "name": "山西博物馆少年票",
+                        "price": 0
                     },
                     {
-                        id: "a4",
-                        name: "山西博物馆青年票",
-                        price: 0
+                        "id": "a4",
+                        "name": "山西博物馆孕妇票",
+                        "price": 90
                     },
                     {
-                        id: "a5",
-                        name: "山西博物馆儿童票",
-                        price: 0
+                        "id": "a5",
+                        "name": "山西博物馆青年票",
+                        "price": 50
                     },
                     {
-                        id: "a6",
-                        name: "山西博物馆儿童票",
-                        price: 70
+                        "id": "a6",
+                        "name": "山西博物馆中年票",
+                        "price": 20
                     },
                     {
-                        id: "a7",
-                        name: "山西博物馆儿童票",
-                        price: 90
+                        "id": "a7",
+                        "name": "山西博物馆老人票",
+                        "price": 10
                     }
                 ],
                 showbtn: false,
@@ -128,6 +129,32 @@
                 }else{
                     alert("请选择票类")
                 }
+            },
+            // 取消购票
+            cancel () {
+
+                // swal({   
+                //     title: "取消本次购票",
+                //     type: "warning",
+                //     showCancelButton: true,
+                //     confirmButtonColor: "#DD6B55",
+                //     confirmButtonText: "确认",
+                //     cancelButtonText: "返回"
+                //     // closeOnConfirm: false, 
+                //     // closeOnCancel: false 
+                // }, (isConfirm) => {
+                //     if (isConfirm) {     
+                //        this.$router.push({ name: 'home'}); 
+                //        // console.log(isConfirm);
+                //     } 
+                // })
+
+                swal({
+                    title: "该身份证已购过门票",
+                    text: "每张身份证仅限购买一张门票",
+                    type: "error",
+                    confirmButtonText: "关闭"
+                });
             }
         },
         computed: {  
@@ -140,7 +167,27 @@
                 }
                 return this.ticketslists
             }
+        },
+        mounted () {
+            // $.ajax({
+            //     url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+            //     type: "POST",
+            //     data: {
+            //         "op": "MACHINE_TICKET_LIST"
+            //     },
+            //     dataType: "jsonp",
+            //     jsonp:"callback",
+            //     jsonpCallback: "handle",
+            //     success: ((data) => {
+            //         // this.ticketslists = data
+            //         console.log(data)
+            //     }),
+            //     error: ((xhr) => {
+            //         alert(xhr.status)
+            //     })
+            // })
         }
+
     }
 </script>
 <style lang="less">
