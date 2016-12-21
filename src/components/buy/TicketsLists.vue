@@ -29,7 +29,7 @@
                     <i class="icon-unchoice" 
                         :class="{'icon-choice': item.ischoice}">    
                     </i>
-                    <span>{{item.name}}</span>
+                    <span>{{item.title}}</span>
                     <em v-if="item.free">
                         {{ item.free }}
                     </em>
@@ -38,7 +38,26 @@
                 </label>
             </div>           
         </div>
-
+        <!-- loading -->
+        <div class="loading" v-if="isLoading">
+            <div class="loading-con">
+                <div class="sk-circle">
+                    <div class="sk-circle1 sk-child"></div>
+                    <div class="sk-circle2 sk-child"></div>
+                    <div class="sk-circle3 sk-child"></div>
+                    <div class="sk-circle4 sk-child"></div>
+                    <div class="sk-circle5 sk-child"></div>
+                    <div class="sk-circle6 sk-child"></div>
+                    <div class="sk-circle7 sk-child"></div>
+                    <div class="sk-circle8 sk-child"></div>
+                    <div class="sk-circle9 sk-child"></div>
+                    <div class="sk-circle10 sk-child"></div>
+                    <div class="sk-circle11 sk-child"></div>
+                    <div class="sk-circle12 sk-child"></div>
+                  </div>
+                <span>{{ loadingNotice }}</span>
+            </div>
+        </div>
         <!-- 按钮世界 -->
         <div class="buy-btn money">
             <!-- <router-link class="cancel-btn" :to="{ name: 'home'}"></router-link> -->
@@ -56,46 +75,12 @@
         name: 'ticketslists',
         data () {
             return {
-                ticketslists:[
-                    {
-                        "id": "a1",
-                        "name": "山西博物馆珍藏票",
-                        "price": 0
-                    },
-                    {
-                        "id": "a2",
-                        "name": "山西博物馆儿童票",
-                        "price": 70
-                    },
-                    {
-                        "id": "a3",
-                        "name": "山西博物馆少年票",
-                        "price": 0
-                    },
-                    {
-                        "id": "a4",
-                        "name": "山西博物馆孕妇票",
-                        "price": 90
-                    },
-                    {
-                        "id": "a5",
-                        "name": "山西博物馆青年票",
-                        "price": 50
-                    },
-                    {
-                        "id": "a6",
-                        "name": "山西博物馆中年票",
-                        "price": 20
-                    },
-                    {
-                        "id": "a7",
-                        "name": "山西博物馆老人票",
-                        "price": 10
-                    }
-                ],
+                ticketslists:[],
                 showbtn: false,
                 total: 0,
-                redata: []
+                redata: [],
+                isLoading: false,
+                loadingNotice: ""
             }
         },
         methods: {
@@ -108,7 +93,7 @@
                 if(!item.ischoice){
                     this.total += item.price
                     this.showbtn = true
-                    this.redata.push(item.id,this.total);
+                    this.redata.push(item.product_sn,this.total);
                 }
 
                 item.ischoice = !item.ischoice
@@ -125,36 +110,94 @@
                 // 数据提交
                 if(this.showbtn){
                     console.log(this.redata)
-                    alert(this.redata)
+                    let product_id = this.redata[0].toString(),
+                        dataobj  = {}
+                        dataobj[product_id] = "1";
+                        console.log(dataobj)
+                    $.ajax({
+                        url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+                        type: "POST",
+                        data: {
+                            "op"          :  "MACHINE_ORDER_CREATE",
+                            "id_card"     :  "130633199104116551", 
+                            "product_car" :  dataobj,
+                            "paid"        :  this.redata[1], 
+                        },
+                        dataType: "jsonp",
+                        jsonp:"callback",
+                        jsonpCallback: "handle",
+                        beforeSend: (() => {
+                            this.isLoading = true
+                            this.loadingNotice = "正在处理订单"
+                        }),
+                        success: ((data) => {
+                            console.log(data)
+                            if(data.code === 1){
+                                // 支付接口
+                                $.ajax({
+                                    url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+                                    type: "POST",
+                                    data: {
+                                        "op": "MACHINE_PAY_AFTER",
+                                        "order_sn_map": {"0":data.data.order_sn_map[0],"1":data.data.order_sn_map[1]}
+                                    },
+                                    dataType: "jsonp",
+                                    jsonp:"callback",
+                                    jsonpCallback: "handle",
+                                    success: ((data) => {
+                                        console.log(data)
+                                        if(data.code === 1){
+                                            this.$router.push({name:'buysuccess'}); // 
+                                        }else{
+                                            console.log(data.message);
+                                        }
+
+                                    }),
+                                    complete: (() => {
+                                        this.isLoading = false
+                                    }),
+                                    error: ((xhr) => {
+                                        alert(xhr.status)
+                                    })
+                                })
+                            }else{
+                                console.log(data.message)
+                            }
+                        }),
+                        error: ((xhr) => {
+                            alert(xhr.status)
+                        })
+                    })
+
                 }else{
-                    alert("请选择票类")
+                    console.log("请选择票类");
                 }
             },
             // 取消购票
             cancel () {
 
-                // swal({   
-                //     title: "取消本次购票",
-                //     type: "warning",
-                //     showCancelButton: true,
-                //     confirmButtonColor: "#DD6B55",
-                //     confirmButtonText: "确认",
-                //     cancelButtonText: "返回"
-                //     // closeOnConfirm: false, 
-                //     // closeOnCancel: false 
-                // }, (isConfirm) => {
-                //     if (isConfirm) {     
-                //        this.$router.push({ name: 'home'}); 
-                //        // console.log(isConfirm);
-                //     } 
-                // })
+                swal({   
+                    title: "取消本次购票",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "确认",
+                    cancelButtonText: "返回"
+                    // closeOnConfirm: false, 
+                    // closeOnCancel: false 
+                }, (isConfirm) => {
+                    if (isConfirm) {     
+                       this.$router.push({ name: 'home'}); 
+                       // console.log(isConfirm);
+                    } 
+                })
 
-                swal({
-                    title: "该身份证已购过门票",
-                    text: "每张身份证仅限购买一张门票",
-                    type: "error",
-                    confirmButtonText: "关闭"
-                });
+                // swal({
+                //     title: "该身份证已购过门票",
+                //     text: "每张身份证仅限购买一张门票",
+                //     type: "error",
+                //     confirmButtonText: "关闭"
+                // });
             }
         },
         computed: {  
@@ -169,23 +212,32 @@
             }
         },
         mounted () {
-            // $.ajax({
-            //     url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
-            //     type: "POST",
-            //     data: {
-            //         "op": "MACHINE_TICKET_LIST"
-            //     },
-            //     dataType: "jsonp",
-            //     jsonp:"callback",
-            //     jsonpCallback: "handle",
-            //     success: ((data) => {
-            //         // this.ticketslists = data
-            //         console.log(data)
-            //     }),
-            //     error: ((xhr) => {
-            //         alert(xhr.status)
-            //     })
-            // })
+            $.ajax({
+                url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+                type: "POST",
+                data: {
+                    "op": "MACHINE_TICKET_LIST"
+                },
+                dataType: "jsonp",
+                jsonp:"callback",
+                jsonpCallback: "handle",
+                beforeSend: (() => {
+                    console.log("beforeSend");
+                    this.isLoading = true
+                    this.loadingNotice = "正在加载数据..."
+                }),
+                success: ((data) => {
+                    this.ticketslists = data.data.data
+                    // console.log(data)
+                }),
+                complete: (() => {
+                    console.log("complete");
+                    this.isLoading = false
+                }),
+                error: ((xhr) => {
+                    alert(xhr.status)
+                })
+            })
         }
 
     }
