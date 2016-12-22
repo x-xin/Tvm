@@ -115,7 +115,8 @@
                         dataobj[product_id] = "1";
                         console.log(dataobj)
                     $.ajax({
-                        url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+                        // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
+                        url: "http://127.0.0.1/order",
                         type: "POST",
                         data: {
                             "op"          :  "MACHINE_ORDER_CREATE",
@@ -123,9 +124,10 @@
                             "product_car" :  dataobj,
                             "paid"        :  this.redata[1], 
                         },
-                        dataType: "jsonp",
-                        jsonp:"callback",
-                        jsonpCallback: "handle",
+                        dataType: "json",
+                        // dataType: "jsonp",
+                        // jsonp:"callback",
+                        // jsonpCallback: "handle",
                         beforeSend: (() => {
                             this.isLoading = true
                             this.loadingNotice = "正在处理订单"
@@ -135,15 +137,17 @@
                             if(data.code === 1){
                                 // 支付接口
                                 $.ajax({
-                                    url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+                                    // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
+                                    url: "http://127.0.0.1/pay",
                                     type: "POST",
                                     data: {
                                         "op": "MACHINE_PAY_AFTER",
                                         "order_sn_map": {"0":data.data.order_sn_map[0],"1":data.data.order_sn_map[1]}
                                     },
-                                    dataType: "jsonp",
-                                    jsonp:"callback",
-                                    jsonpCallback: "handle",
+                                    dataType: "json",
+                                    // dataType: "jsonp",
+                                    // jsonp:"callback",
+                                    // jsonpCallback: "handle",
                                     success: ((data) => {
                                         console.log(data)
                                         if(data.code === 1){
@@ -213,21 +217,23 @@
         },
         mounted () {
             $.ajax({
-                url: "http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket",
+                // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
+                url: "http://127.0.0.1/ticketlist",
                 type: "POST",
                 data: {
                     "op": "MACHINE_TICKET_LIST"
                 },
-                dataType: "jsonp",
-                jsonp:"callback",
-                jsonpCallback: "handle",
+                dataType: "json",
+                // dataType: "jsonp",
+                // jsonp:"callback",
+                // jsonpCallback: "handle",
                 beforeSend: (() => {
                     console.log("beforeSend");
                     this.isLoading = true
                     this.loadingNotice = "正在加载数据..."
                 }),
                 success: ((data) => {
-                    this.ticketslists = data.data.data
+                    this.ticketslists = data.data
                     // console.log(data)
                 }),
                 complete: (() => {

@@ -32,6 +32,9 @@
             // refurbishNet () {
             //     return this.hasnet = true
             // }
+        },
+        mounted () {
+            //
         }
     }
 </script>

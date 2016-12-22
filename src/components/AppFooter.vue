@@ -5,8 +5,8 @@
         <div class="modal" v-if="showlogin">
             <div class="login">
                 <h2>请输入管理员密码</h2>
-                <input type="password" value="6835421">
-                <i class="error_msg">密码错误啦</i>
+                <input type="password" v-model="password" autofocus="true">
+                <i class="error_msg" v-if="showErrorMsg">密码错误啦</i>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelLogin()"></a><!-- 
                      --><a class="set_confirm" @click="confirmLogin()"></a>                    
@@ -19,12 +19,12 @@
                 <em class="close">关闭软件</em>
                 <label class="remain">
                     <span>剩余纸质票数量</span>
-                    <input type="text" v-model="remain">
+                    <input type="text" v-model="remain" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <label class="max">
                     <span>数量预警值&emsp;&emsp;</span>
-                    <input type="text" v-model="max">
+                    <input type="text" v-model="max" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
 
@@ -43,7 +43,7 @@
                 </label>
                 <label class="phone">
                     <span>短信发送号码</span>
-                    <input type="text" v-model="phone">
+                    <input type="text" v-model="phone" maxlength="11" minlength="11">
                 </label>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelSet()"></a><!-- 
@@ -61,9 +61,11 @@ export default {
         showlogin: false,
         showset: false,
         messnotice: false,
-        max: 1222,
-        remain: 343343,
-        phone: "15880910182"
+        max: 126,
+        remain: 999,
+        phone: "15880910182",
+        password:"123456",
+        showErrorMsg: false
     }
   },
   methods: {
@@ -75,8 +77,28 @@ export default {
         this.showlogin = false
     },
     confirmLogin () {
-        this.showset = true
-        this.showlogin = false
+
+        $.ajax({
+            url: "http://127.0.0.1/password",
+            type: "POST",
+            dataType: "json",
+
+            success: ((data) => {
+                console.log(data)
+                console.log(this.password)
+                if(data.password === this.password){
+                    this.showErrorMsg = false
+                    this.showset = true
+                    this.showlogin = false
+                }else{
+                    this.showErrorMsg = true
+                }
+            }),
+            error: ((xhr) => {
+                console.log(xhr.status)
+            })
+        })
+        
     },
 
     cancelSet () {
@@ -84,6 +106,29 @@ export default {
     },
     confirmSet () {
         //提交数据给后端
+        if(this.messnotice === true){
+            //提交数据
+            $.ajax({
+                url: "http://127.0.0.1/phone",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    phone: this.phone
+                },
+                success: ((data) => {
+                    console.log(data)
+                    this.showset = false
+                }),
+                error: ((xhr) => {
+                    console.log(xhr.status)
+                })
+            })
+        }else{
+            // 关掉弹窗
+            this.showset = false
+            console.log("关闭短信提醒");
+        }
+
     },
     controlMessNotice () {
         this.messnotice = !this.messnotice
@@ -249,6 +294,9 @@ export default {
                 border:1px solid #ccc;
                 &:focus{
                     .box-shadow(0,0,10px,#a3d1ff);
+                }
+                &:-webkit-autofill {
+                    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
                 }
             }
             >i{
