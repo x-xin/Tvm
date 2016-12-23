@@ -21,7 +21,7 @@
         <!-- 验证身份 -->
         <div class="validate">
             <img src="../../assets/identity.gif" width="100%" height="100%">
-            <span>请将您的身份证平放在识别处{{ idname }} {{ idnum }}</span>
+            <span>请将您的身份证平放在识别处</span>
         </div>
 
         <!-- 按钮世界 -->
@@ -36,29 +36,32 @@
         name: 'validate',
         data () {
             return {
-                idname: "",
-                idnum: "" 
+                userInfo:{
+                    idname: "",
+                    idnum: "" 
+                }
             }
         },
         mounted () {
+            let ext = window.external
+            if(ext && ext.isTicketSys == true){
 
-            // setTimeout(() => {
+                ext.prtSetStockNum(161); //当前票数
+                ext.prtSetWarnNum(100); // 当前预警值
+                ext.prtSetIsSendMsg(1); // 是否发短信
+                ext.prtSetPhone("1234567"); // 手机号码
+                
+                ext.idStartRead(); // 开始读身份证
 
-            //     let TicketPIDRd = new ActiveXObject("CncnTicket.PIDRd");
-
-            //     if(TicketPIDRd){
-            //         // 连接身份证读卡机具
-            //         TicketPIDRd.connect();
-            //     }
-            //     if(TicketPIDRd && TicketPIDRd.read() == 1 && TicketPIDRd.isReadOK() == 1){
-
-
-            //         // 获取姓名和身份证号
-            //         this.idname = TicketPIDRd.pname
-            //         this.idnum = TicketPIDRd.pidnum
-
-            //     }
-            // },3000)
+                let timer = setInterval(() => {
+                    if(ext.idReadIsOK() == 1){
+                        clearInterval(timer)
+                        this.userInfo.idname = ext.idGetName()
+                        this.userInfo.idnum = ext.idGetIDNum()
+                        this.$router.push({name:'ticketslists'})
+                    }
+                },1000); 
+            }
         }        
     }
 </script>

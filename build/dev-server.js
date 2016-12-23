@@ -58,8 +58,8 @@ var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsS
 app.use(staticPath, express.static('./static'))
 
 // mockData
-var mockData = require('./mockData');
-app.use('/', mockData);
+var mockData = require('./mockData')
+app.use('/', mockData)
 
 module.exports = app.listen(port, function (err) {
   if (err) {

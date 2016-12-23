@@ -80,7 +80,8 @@
                 total: 0,
                 redata: [],
                 isLoading: false,
-                loadingNotice: ""
+                loadingNotice: "",
+                userInfo: {}
             }
         },
         methods: {
@@ -116,7 +117,7 @@
                         console.log(dataobj)
                     $.ajax({
                         // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
-                        url: "http://127.0.0.1/order",
+                        url: "http://172.16.0.208/order",
                         type: "POST",
                         data: {
                             "op"          :  "MACHINE_ORDER_CREATE",
@@ -138,7 +139,7 @@
                                 // 支付接口
                                 $.ajax({
                                     // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
-                                    url: "http://127.0.0.1/pay",
+                                    url: "http://172.16.0.208/pay",
                                     type: "POST",
                                     data: {
                                         "op": "MACHINE_PAY_AFTER",
@@ -218,7 +219,7 @@
         mounted () {
             $.ajax({
                 // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
-                url: "http://127.0.0.1/ticketlist",
+                url: "http://172.16.0.208/ticketlist",
                 type: "POST",
                 data: {
                     "op": "MACHINE_TICKET_LIST"
@@ -245,7 +246,6 @@
                 })
             })
         }
-
     }
 </script>
 <style lang="less">
