@@ -1,11 +1,23 @@
 <template>
-    <router-view></router-view>
+    <router-view :user="userInfo" v-on:valida = "getUserInfo"></router-view>
 </template>
 <script>
     export default {
         name: 'buytickets',
         data () {
             return {
+                //
+                userInfo:{
+                    idname: "",
+                    idnum: "" 
+                }
+            }
+        },
+        methods: {
+            getUserInfo (info) {
+                console.log(info.idname);
+                this.userInfo.idname = info.idname
+                this.userInfo.idnum = info.idnum
             }
         }
     }

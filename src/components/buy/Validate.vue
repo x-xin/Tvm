@@ -32,6 +32,7 @@
     </div>
 </template>
 <script>
+    import Bus from '../bus/Bus'
     export default {
         name: 'validate',
         data () {
@@ -40,6 +41,11 @@
                     idname: "",
                     idnum: "" 
                 }
+            }
+        },
+        methods: {
+            valida () {
+                this.$emit("valida",{idname:this.userInfo.idname,idnum:this.userInfo.idnum})
             }
         },
         mounted () {
@@ -58,11 +64,12 @@
                         clearInterval(timer)
                         this.userInfo.idname = ext.idGetName()
                         this.userInfo.idnum = ext.idGetIDNum()
+                        this.valida()
                         this.$router.push({name:'ticketslists'})
                     }
                 },1000); 
             }
-        }        
+        }   
     }
 </script>
 <style lang="less">

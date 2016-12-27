@@ -80,10 +80,10 @@
                 total: 0,
                 redata: [],
                 isLoading: false,
-                loadingNotice: "",
-                userInfo: {}
+                loadingNotice: ""
             }
         },
+        props: ['user'],
         methods: {
             choice (item,index) { 
 
@@ -152,6 +152,9 @@
                                     success: ((data) => {
                                         console.log(data)
                                         if(data.code === 1){
+
+                                            //开启打印接口，再跳转成功页面
+
                                             this.$router.push({name:'buysuccess'}); // 
                                         }else{
                                             console.log(data.message);
@@ -245,7 +248,8 @@
                     alert(xhr.status)
                 })
             })
-        }
+            console.log(this.user.idname+" "+this.user.idnum);
+        },
     }
 </script>
 <style lang="less">
