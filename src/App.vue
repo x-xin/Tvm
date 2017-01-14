@@ -22,7 +22,7 @@ export default {
 
 <style lang="less">
     @import "./less/style.less";
-    // common
+    /* common */
     .main{
         width: 100%;
         height: 1000px;

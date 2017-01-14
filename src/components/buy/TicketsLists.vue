@@ -75,12 +75,12 @@
         name: 'ticketslists',
         data () {
             return {
-                ticketslists:[],
-                showbtn: false,
-                total: 0,
-                redata: [],
-                isLoading: false,
-                loadingNotice: ""
+                ticketslists    :    [],
+                showbtn         :    false,
+                total           :    0,
+                redata          :    [],
+                isLoading       :    false,
+                loadingNotice   :    ""
             }
         },
         props: ['user'],
@@ -116,64 +116,141 @@
                         dataobj[product_id] = "1";
                         console.log(dataobj)
                     $.ajax({
-                        // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
-                        url: "http://172.16.0.208/order",
+                        url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",  // 处理订单
                         type: "POST",
                         data: {
                             "op"          :  "MACHINE_ORDER_CREATE",
-                            "id_card"     :  "130633199104116551", 
+                            "id_card"     :  {"sn":this.user.idnum,"name":this.user.idname},
                             "product_car" :  dataobj,
-                            "paid"        :  this.redata[1], 
+                            "paid"        :  this.redata[1]
                         },
-                        dataType: "json",
-                        // dataType: "jsonp",
-                        // jsonp:"callback",
-                        // jsonpCallback: "handle",
+                        dataType: "jsonp",
+                        jsonp:"callback",
+                        jsonpCallback: "handle",
                         beforeSend: (() => {
                             this.isLoading = true
                             this.loadingNotice = "正在处理订单"
+                            clearTimeout(leaveTimer);     // 关闭定时器
                         }),
                         success: ((data) => {
-                            console.log(data)
+                            console.log(data);
+                            this.isLoading = false;
+                            this.loadingNotice = "";
+
                             if(data.code === 1){
                                 // 支付接口
                                 $.ajax({
-                                    // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
-                                    url: "http://172.16.0.208/pay",
+                                    url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",  // 支付订单
                                     type: "POST",
                                     data: {
                                         "op": "MACHINE_PAY_AFTER",
                                         "order_sn_map": {"0":data.data.order_sn_map[0],"1":data.data.order_sn_map[1]}
                                     },
-                                    dataType: "json",
-                                    // dataType: "jsonp",
-                                    // jsonp:"callback",
-                                    // jsonpCallback: "handle",
+                                    dataType: "jsonp",
+                                    jsonp:"callback",
+                                    jsonpCallback: "handle",
                                     success: ((data) => {
-                                        console.log(data)
+                                        console.log(data.data)
+                                        // alert(data);
+                                        let oneTickets = data.data[0];
+                            
                                         if(data.code === 1){
 
-                                            //开启打印接口，再跳转成功页面
+                                            // loading 开启
 
-                                            this.$router.push({name:'buysuccess'}); // 
+                                            this.isLoading = true;
+                                            this.loadingNotice = "正在处理打印";
+
+                                            //开启打印接口，再跳转成功页面
+                                            let _this = this;
+                                            function printTicket(){
+                                                // let ext = window.external;
+                                                if (ext && ext.isTicketSys == true) {
+                                                    // 票数减1
+                                                    ext.prtSetStockNum(ext.prtGetStockNum()-1);
+                                                    ext.prtPageSetDirection(1);
+                                                    ext.prtPageSetShowInfo(1);
+                                                    ext.prtPageSetWidth(800);
+                                                    ext.prtPageSetHeight(1750);
+                                                    ext.prtPageSetPaddingLeft(1150);
+                                                    ext.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
+                                                    // 发送短信提醒
+                                                    let prtGetIsSendMsg =  ext.prtGetIsSendMsg(),
+                                                        prtGetStockNum  =  ext.prtGetStockNum(),
+                                                        prtGetWarnNum   =  ext.prtGetWarnNum();
+
+                                                    if(prtGetIsSendMsg && prtGetStockNum === prtGetWarnNum ){
+                                                        $.ajax({
+                                                            url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",
+                                                            type: "POST",
+                                                            data: {
+                                                                "op": "MACHINE_SEND_WARN_SMS",
+                                                                "mobile": ext.prtGetPhone(), 
+                                                                "message": "纸质票少于" + ext.prtGetWarnNum() + "张！！！"
+                                                            },
+                                                            dataType: "jsonp",
+                                                            jsonp:"callback",
+                                                            jsonpCallback: "handle",
+                                                            success: ((data) => {
+                                                                //
+                                                                if(data.code === 1){
+                                                                    alert(data.message);
+                                                                }else{
+                                                                    alert(data.message+"error");
+                                                                }
+                                                            }),
+                                                            error: ((xhr) => {
+                                                                alert(xhr.status)
+                                                            })
+                                                        })
+                                                    }
+                                                    // 回到成功页面
+                                                    clearTimeout(goSuccessTimer);  // 取消跳转页面定时器
+                                                    goSuccessTimer = setTimeout(()=>{
+                                                        _this.isLoading = false;
+                                                        _this.loadingNotice = "";
+                                                        _this.$router.push({name:'buysuccess'}); //
+                                                    },3000);
+                                                     
+                                                }
+                                            }
+
+                                            printTicket();
+
                                         }else{
                                             console.log(data.message);
                                         }
 
-                                    }),
-                                    complete: (() => {
-                                        this.isLoading = false
+
                                     }),
                                     error: ((xhr) => {
                                         alert(xhr.status)
                                     })
                                 })
+
                             }else{
-                                console.log(data.message)
+                                // alert(data.message);
+                                clearTimeout(leaveTimer); // 数据处理开始关闭返回定时器
+                                swal({
+                                    title: "该身份证已购过门票",
+                                    text: data.message,
+                                    type: "error",
+                                    confirmButtonText: "关闭"
+                                },(isConfirm) => {
+                                    if(isConfirm){
+                                        leaveTimer = setTimeout(() => {
+                                            this.$router.push({name:'home'})
+                                        }, leaveTimerMin);
+                                    }
+                                });
                             }
                         }),
                         error: ((xhr) => {
-                            alert(xhr.status)
+                            alert(xhr.status);
+                            // 定时器开启
+                            leaveTimer = setTimeout(() => {
+                                this.$router.push({name:'home'})
+                            }, leaveTimerMin);
                         })
                     })
 
@@ -183,7 +260,7 @@
             },
             // 取消购票
             cancel () {
-
+                // 弹窗提示
                 swal({   
                     title: "取消本次购票",
                     type: "warning",
@@ -191,25 +268,22 @@
                     confirmButtonColor: "#DD6B55",
                     confirmButtonText: "确认",
                     cancelButtonText: "返回"
-                    // closeOnConfirm: false, 
-                    // closeOnCancel: false 
                 }, (isConfirm) => {
                     if (isConfirm) {     
                        this.$router.push({ name: 'home'}); 
-                       // console.log(isConfirm);
-                    } 
+                       clearTimeout(leaveTimer);
+                    }else{
+                        // 开启定时器
+                        clearTimeout(leaveTimer);
+                        leaveTimer = setTimeout(() => {
+                            this.$router.push({name:'home'})
+                        }, leaveTimerMin);
+                    }
                 })
-
-                // swal({
-                //     title: "该身份证已购过门票",
-                //     text: "每张身份证仅限购买一张门票",
-                //     type: "error",
-                //     confirmButtonText: "关闭"
-                // });
             }
         },
         computed: {  
-            // 计算￥0 显示免费
+            // 计算￥0 显示【免费】
             freePrice () {
                 for (let i = 0; i < this.ticketslists.length; i++) {
                     if(this.ticketslists[i].price === 0){
@@ -220,59 +294,53 @@
             }
         },
         mounted () {
+
+            // 用户无操作，定时器开启，则返回首页
+
+            clearTimeout(leaveTimer);
+
+            leaveTimer = setTimeout(() => {
+
+                this.$router.push({name:'home'})
+
+            }, leaveTimerMin);
+
+            document.body.onclick = () => {
+                clearTimeout(leaveTimer);
+                leaveTimer = setTimeout(() => {
+
+                    this.$router.push({name:'home'})
+
+                }, leaveTimerMin);
+            }
+
             $.ajax({
-                // http://172.16.0.237:8080/service/gh_b1bc335cbc86/ticket
-                url: "http://172.16.0.208/ticketlist",
+                url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",  // 加载门票列表
                 type: "POST",
                 data: {
                     "op": "MACHINE_TICKET_LIST"
                 },
-                dataType: "json",
-                // dataType: "jsonp",
-                // jsonp:"callback",
-                // jsonpCallback: "handle",
+                dataType: "jsonp",
+                jsonp:"callback",
+                jsonpCallback: "handle",
                 beforeSend: (() => {
-                    console.log("beforeSend");
                     this.isLoading = true
                     this.loadingNotice = "正在加载数据..."
                 }),
                 success: ((data) => {
-                    this.ticketslists = data.data
-                    // console.log(data)
+                    this.ticketslists = data.data.data
                 }),
                 complete: (() => {
-                    console.log("complete");
                     this.isLoading = false
                 }),
                 error: ((xhr) => {
                     alert(xhr.status)
                 })
             })
-            console.log(this.user.idname+" "+this.user.idnum);
-
-            // 用户无操作，定时器开启，则返回首页
-            var EXPIRE_IN_15MIN = 1000 * 60 * 1.5; // 1.5 min
-
-            window.leaveTimer1 = setTimeout(() => {
-
-                this.$router.push({name:'home'})
-
-            }, EXPIRE_IN_15MIN);
-
-            document.body.onclick = () => {
-                clearTimeout(window.leaveTimer1);
-                clearTimeout(window.leaveTimer2);
-                window.leaveTimer2 = setTimeout(() => {
-
-                    this.$router.push({name:'home'})
-
-                }, EXPIRE_IN_15MIN);
-            }
         },
         destroyed () {
-            // 取消定时器
-            clearTimeout(window.leaveTimer1);
-            clearTimeout(window.leaveTimer2);
+            clearTimeout(leaveTimer);      // 取消定时器
+            clearTimeout(goSuccessTimer);  // 取消跳转页面定时器
         }
     }
 </script>

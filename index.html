@@ -27,6 +27,13 @@
         // 禁止拖动
         document.onmousemove = function(e){return false;}
     </script>
+    <script type="text/javascript">
+        var ext            =  window.external,   // 取卡器设备
+            leaveTimer     =  null,              // 无操作定时器
+            leaveTimerMin  =  1000 * 60 * 1.5,   // 无操作时间1.5min
+            readCardTimer  =  null;              // 获取Card信息
+            goSuccessTimer =  null;              // 打印成功后跳转到成功页面时间
+    </script>
   </head>
   <!-- <body oncontextmenu="return false"> -->
   <body>

@@ -38,28 +38,27 @@
         },
         mounted () {
             // 用户无操作，定时器开启，则返回首页
-            var EXPIRE_IN_15MIN = 1000 * 60 * 1.5; // 1.5 min
 
-            window.leaveTimer1 = setTimeout(() => {
+            clearTimeout(leaveTimer);
+
+            leaveTimer = setTimeout(() => {
 
                 this.$router.push({name:'home'})
 
-            }, EXPIRE_IN_15MIN);
+            }, leaveTimerMin);
 
             document.body.onclick = () => {
-                clearTimeout(window.leaveTimer1);
-                clearTimeout(window.leaveTimer2);
-                window.leaveTimer2 = setTimeout(() => {
+                clearTimeout(leaveTimer);
+                leaveTimer = setTimeout(() => {
 
                     this.$router.push({name:'home'})
 
-                }, EXPIRE_IN_15MIN);
+                }, leaveTimerMin);
             }
         },
         destroyed () {
             // 取消定时器
-            clearTimeout(window.leaveTimer1);
-            clearTimeout(window.leaveTimer2);
+            clearTimeout(leaveTimer);
         }
     }
 </script>

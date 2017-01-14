@@ -1,12 +1,11 @@
 <template>
     <div class="footer">
         <p>技术支持：厦门欣欣信息有限公司&福建智慧旅游有限公司&nbsp;&nbsp;<a @click="set()">设置</a></p>
-
         <div class="modal" v-if="showlogin">
             <div class="login">
                 <h2>请输入管理员密码</h2>
                 <input type="password" v-model="password" autofocus="true">
-                <i class="error_msg" v-if="showErrorMsg">密码错误啦</i>
+                <i class="error_msg" v-if="showErrorMsg">{{ errorMess }}</i>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelLogin()"></a><!-- 
                      --><a class="set_confirm" @click="confirmLogin()"></a>                    
@@ -16,7 +15,7 @@
         <div class="modal" v-if="showset">
             <div class="set">
                 <h2>系统设置</h2>
-                <em class="close">关闭软件</em>
+                <em class="close" @click="closeApp()">关闭软件</em>
                 <label class="remain">
                     <span>剩余纸质票数量</span>
                     <input type="text" v-model="remain" maxlength="3" minlength="1">
@@ -27,9 +26,7 @@
                     <input type="text" v-model="max" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
-
                 <p>当门票数量低于预警值时，可向管理员发送短信提醒。</p>
-
                 <label class="message">
                     <span>短信提醒</span>
                     <template v-if="messnotice">
@@ -55,85 +52,99 @@
 </template>
 <script>
 export default {
-  name: 'footer',
-  data () {
-    return {
-        showlogin: false,
-        showset: false,
-        messnotice: false,
-        max: 126,
-        remain: 999,
-        phone: "15880910182",
-        password:"123456",
-        showErrorMsg: false
-    }
-  },
-  methods: {
-    set () {
-        this.showlogin = true
+    name: 'footer',
+    data () {
+        return {
+            showlogin       :   false,
+            showset         :   false,
+            messnotice      :   true,
+            max             :   126,   // 预警
+            remain          :   999,// 剩余
+            phone           :   "15880910182",
+            password        :   "366222",
+            errorMess       :   "",
+            showErrorMsg    :   false
+        }
     },
-
-    cancelLogin () {
-        this.showlogin = false
-    },
-    confirmLogin () {
-
-        $.ajax({
-            url: "http://127.0.0.1/password",
-            type: "POST",
-            dataType: "json",
-
-            success: ((data) => {
-                console.log(data)
-                console.log(this.password)
-                if(data.password === this.password){
-                    this.showErrorMsg = false
-                    this.showset = true
-                    this.showlogin = false
-                }else{
-                    this.showErrorMsg = true
-                }
-            }),
-            error: ((xhr) => {
-                console.log(xhr.status)
-            })
-        })
-        
-    },
-
-    cancelSet () {
-        this.showset = false
-    },
-    confirmSet () {
-        //提交数据给后端
-        if(this.messnotice === true){
-            //提交数据
+    methods: {
+        closeApp () {
+            if(ext && ext.isTicketSys == true){
+                ext.sysShutdown();
+            }
+        },
+        getAppData () {
+            if(ext && ext.isTicketSys == true){
+                this.remain = ext.prtGetStockNum();
+                this.max = ext.prtGetWarnNum();
+                this.phone = ext.prtGetPhone();
+                this.messnotice = ext.prtGetIsSendMsg();
+            }
+            if(ext.isTicketSys == false){
+                console("is false");
+            }
+        },
+        set () {
+            this.showlogin = true;
+            this.getAppData();
+        },
+        cancelLogin () {
+            this.showlogin = false;
+            this.showErrorMsg = false;
+        },
+        confirmLogin () {
+            // 请求密码验证
             $.ajax({
-                url: "http://127.0.0.1/phone",
+                url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",
                 type: "POST",
-                dataType: "json",
                 data: {
-                    phone: this.phone
+                    "op"          :  "MACHINE_VERIFY_PWD",
+                    "password"    :  this.password
                 },
+                dataType: "jsonp",
+                jsonp:"callback",
+                jsonpCallback: "handle",
+
                 success: ((data) => {
-                    console.log(data)
-                    this.showset = false
+                    if(data.code === 1){
+                        this.showErrorMsg = false
+                        this.showset = true
+                        this.showlogin = false
+                    }else{
+                        this.errorMess = data.message;
+                        this.showErrorMsg = true
+                    }
                 }),
                 error: ((xhr) => {
-                    console.log(xhr.status)
+                    alert(xhr.status)
                 })
-            })
-        }else{
-            // 关掉弹窗
-            this.showset = false
-            console.log("关闭短信提醒");
-        }
+            }) 
+        },
 
+        cancelSet () {
+            this.showset = false
+            this.getAppData();
+        },
+        confirmSet () {
+            //客户端交互数据
+            let _this = this;
+            if(ext && ext.isTicketSys == true){
+                ext.prtSetStockNum(_this.remain);
+                ext.prtSetWarnNum(_this.max);
+                ext.prtSetPhone(_this.phone);
+                ext.prtSetIsSendMsg(_this.messnotice);
+            }
+            
+            // 关掉弹窗
+            this.showset = false;
+
+        },
+        controlMessNotice () {
+            this.messnotice = !this.messnotice
+        }
     },
-    controlMessNotice () {
-        this.messnotice = !this.messnotice
+    mounted () {
+        this.getAppData();
     }
-  }
 }
 </script>
 <style lang="less">

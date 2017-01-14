@@ -2,14 +2,13 @@
     <div ref="swiper" class="swiper-container">
         <div class="swiper-wrapper">
             <div class="swiper-slide">
-	            <!-- <img v-bind:src="item.imgsrc" v-bind:alt="item.alt"> -->
-	             <img class="biglogo" src="../assets/banner/banner-2.jpg">
+	            <img class="biglogo" src="../assets/banner/banner-2.jpg">
             </div>
             <div class="swiper-slide">
-	             <img class="biglogo" src="../assets/banner/banner-1.jpg">
+	            <img class="biglogo" src="../assets/banner/banner-1.jpg">
             </div>
             <div class="swiper-slide">
-	             <img class="biglogo" src="../assets/banner/banner-3.jpg">
+	            <img class="biglogo" src="../assets/banner/banner-3.jpg">
             </div>
         </div>
         <!-- Add Pagination -->

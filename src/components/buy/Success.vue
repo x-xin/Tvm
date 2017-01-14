@@ -1,6 +1,6 @@
 <template>
     <div class="main buy-tickets">
-       <!-- 头部导航 -->
+        <!-- 头部导航 -->
         <div class="buy-menu">
             <div>
                 <em>1</em>
