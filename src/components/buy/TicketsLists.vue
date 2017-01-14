@@ -150,7 +150,7 @@
                                     jsonp:"callback",
                                     jsonpCallback: "handle",
                                     success: ((data) => {
-                                        console.log(data.data)
+                                        // alert(data.code)
                                         // alert(data);
                                         let oneTickets = data.data[0];
                             
@@ -193,9 +193,9 @@
                                                             success: ((data) => {
                                                                 //
                                                                 if(data.code === 1){
-                                                                    alert(data.message);
+                                                                    console.log(data.message);
                                                                 }else{
-                                                                    alert(data.message+"error");
+                                                                    console.log(data.message+"error");
                                                                 }
                                                             }),
                                                             error: ((xhr) => {
@@ -203,13 +203,38 @@
                                                             })
                                                         })
                                                     }
-                                                    // 回到成功页面
-                                                    clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
-                                                    GO_SUCCESS_TIMER = setTimeout(()=>{
-                                                        _this.isLoading = false;
-                                                        _this.loadingNotice = "";
-                                                        _this.$router.push({name:'buysuccess'}); //
-                                                    },GO_SUCCESS_TIMER_MIN);
+                                                    // 打印回调
+                                                    $.ajax({
+                                                        url: AJAX_URL,  
+                                                        type: "POST",
+                                                        data: {
+                                                            "op": "MACHINE_PRINT_CALL_BACK",
+                                                            "ticket_sn_map": {"0" : oneTickets.sn}
+                                                        },
+                                                        dataType: "jsonp",
+                                                        jsonp:"callback",
+                                                        jsonpCallback: "handle",
+                                                        success: ((data) => {
+
+                                                            // 回到成功页面
+                                                            clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
+                                                            GO_SUCCESS_TIMER = setTimeout(()=>{
+                                                                _this.isLoading = false;
+                                                                _this.loadingNotice = "";
+                                                                _this.$router.push({name:'buysuccess'}); //
+                                                            },GO_SUCCESS_TIMER_MIN);
+
+                                                            //
+                                                            if(data.code === 1){
+                                                                console.log(data.message);
+                                                            }else{
+                                                                console.log(data.message+"error");
+                                                            }
+                                                        }),
+                                                        error: ((xhr) => {
+                                                            alert(xhr.status)
+                                                        })
+                                                    })
                                                      
                                                 }
                                             }

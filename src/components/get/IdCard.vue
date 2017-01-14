@@ -19,7 +19,7 @@
         </div>
         <div class="validate">
             <img src="../../assets/identity.gif" width="100%" height="100%">
-            <span>请将您的身份证平放在识别处{{ userInfo.idname }}{{ userInfo.idnum }}</span>
+            <span>请将您的身份证平放在识别处</span>
         </div>
         <!-- loading -->
         <div class="loading" v-if="isLoading">
@@ -105,7 +105,8 @@
                                 type: "POST",
                                 data: {
                                     "op": "MACHINE_FETCH_VOUCHER",
-                                    "id_card":{"sn":_this.userInfo.idnum,"name":_this.userInfo.idname}
+                                    "certi_sn":_this.userInfo.idnum
+                                    // "id_card":{"sn":_this.userInfo.idnum,"name":_this.userInfo.idname}
                                 },
                                 dataType: "jsonp",
                                 jsonp:"callback",
@@ -152,9 +153,9 @@
                                                         success: ((data) => {
                                                             //
                                                             if(data.code === 1){
-                                                                alert(data.message);
+                                                                console.log(data.message);
                                                             }else{
-                                                                alert(data.message+"error");
+                                                                console.log(data.message+"error");
                                                             }
                                                         }),
                                                         error: ((xhr) => {
@@ -162,13 +163,38 @@
                                                         })
                                                     })
                                                 }
-                                                // 成功后 3S 去跳转到成功页面
-                                                clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
-                                                GO_SUCCESS_TIMER = setTimeout(()=>{
-                                                    _this.isLoading = false;
-                                                    _this.loadingNotice = "";
-                                                    _this.$router.push({name:'getsuccess'}); //
-                                                },GO_SUCCESS_TIMER_MIN);
+                                                // 打印回调
+                                                $.ajax({
+                                                    url: AJAX_URL,  
+                                                    type: "POST",
+                                                    data: {
+                                                        "op": "MACHINE_PRINT_CALL_BACK",
+                                                        "ticket_sn_map": {"0" : oneTickets.sn}
+                                                    },
+                                                    dataType: "jsonp",
+                                                    jsonp:"callback",
+                                                    jsonpCallback: "handle",
+                                                    success: ((data) => {
+
+                                                        // 成功后 3S 去跳转到成功页面
+                                                        clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
+                                                        GO_SUCCESS_TIMER = setTimeout(()=>{
+                                                            _this.isLoading = false;
+                                                            _this.loadingNotice = "";
+                                                            _this.$router.push({name:'getsuccess'}); //
+                                                        },GO_SUCCESS_TIMER_MIN);
+
+                                                        //
+                                                        if(data.code === 1){
+                                                            console.log(data.message);
+                                                        }else{
+                                                            console.log(data.message+"error");
+                                                        }
+                                                    }),
+                                                    error: ((xhr) => {
+                                                        alert(xhr.status)
+                                                    })
+                                                })
                                                  
                                             }
                                         }
@@ -176,7 +202,21 @@
                                         printTicket();
 
                                     }else{
-                                        console.log(data.message);
+                                        // alert(data.message);
+                                        clearTimeout(LEAVE_TIMER);  // 关闭离开定时器 
+                                        swal({
+                                            title: "该身份证已取票",
+                                            text: data.message,
+                                            type: "error",
+                                            confirmButtonText: "关闭"
+                                        },(isConfirm) => {
+                                            if(isConfirm){
+                                                clearTimeout(LEAVE_TIMER);
+                                                LEAVE_TIMER = setTimeout(() => {
+                                                    this.$router.push({name:'home'})
+                                                }, LEAVE_TIMER_MIN);
+                                            }
+                                        });
                                     }
 
                                 }),
