@@ -65,44 +65,43 @@
 
             // 用户无操作，定时器开启，则返回首页
 
-            clearTimeout(leaveTimer);
+            clearTimeout(LEAVE_TIMER);
 
-            leaveTimer = setTimeout(() => {
+            LEAVE_TIMER = setTimeout(() => {
 
                 this.$router.push({name:'home'})
 
-            }, leaveTimerMin);
+            }, LEAVE_TIMER_MIN);
 
             document.body.onclick = () => {
-                clearTimeout(leaveTimer);
-                leaveTimer = setTimeout(() => {
+                clearTimeout(LEAVE_TIMER);
+                LEAVE_TIMER = setTimeout(() => {
 
                     this.$router.push({name:'home'})
 
-                }, leaveTimerMin);
+                }, LEAVE_TIMER_MIN);
             }
 
-            // let ext = window.external;
-            if(ext && ext.isTicketSys == true){
+            if(EXT && EXT.isTicketSys == true){
 
-                if(ext && ext.isTicketSys == true && ext.prtGetStockNum()>2){
+                if(EXT && EXT.isTicketSys == true && EXT.prtGetStockNum()>2){
 
-                    ext.idStartRead(); // 开始读身份证
+                    EXT.idStartRead(); // 开始读身份证
 
-                    clearInterval(readCardTimer);
-                    readCardTimer = setInterval(() => {
-                        if(ext.idReadIsOK() == 1){
+                    clearInterval(READ_CARD_TIMER);
+                    READ_CARD_TIMER = setInterval(() => {
+                        if(EXT.idReadIsOK() == 1){
                             
-                            clearTimeout(leaveTimer);
-                            clearInterval(readCardTimer);
+                            clearTimeout(LEAVE_TIMER);
+                            clearInterval(READ_CARD_TIMER);
 
-                            this.userInfo.idname = ext.idGetName()
-                            this.userInfo.idnum = ext.idGetIDNum()
+                            this.userInfo.idname = EXT.idGetName()
+                            this.userInfo.idnum = EXT.idGetIDNum()
                             // ajax data
                             // this.$router.push({name:'getsuccess'})
                             let _this = this;
                             $.ajax({
-                                url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",  // 服务端获取数据是否可以打印
+                                url: AJAX_URL,  // 服务端获取数据是否可以打印
                                 type: "POST",
                                 data: {
                                     "op": "MACHINE_FETCH_VOUCHER",
@@ -121,31 +120,31 @@
                                         },1000);
 
                                         // 票数减1
-                                        ext.prtSetStockNum(ext.prtGetStockNum()-1);
+                                        EXT.prtSetStockNum(EXT.prtGetStockNum()-1);
 
                                         //开启打印接口，再跳转成功页面
                                         function printTicket(){
-                                            if (ext && ext.isTicketSys == true) {
-                                                ext.prtPageSetDirection(1);
-                                                ext.prtPageSetShowInfo(1);
-                                                ext.prtPageSetWidth(800);
-                                                ext.prtPageSetHeight(1750);
-                                                ext.prtPageSetPaddingLeft(1150);
-                                                ext.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
+                                            if (EXT && EXT.isTicketSys == true) {
+                                                EXT.prtPageSetDirection(1);
+                                                EXT.prtPageSetShowInfo(1);
+                                                EXT.prtPageSetWidth(800);
+                                                EXT.prtPageSetHeight(1750);
+                                                EXT.prtPageSetPaddingLeft(1150);
+                                                EXT.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
 
                                                 // 发送短信提醒
-                                                let prtGetIsSendMsg =  ext.prtGetIsSendMsg(),
-                                                    prtGetStockNum  =  ext.prtGetStockNum(),
-                                                    prtGetWarnNum   =  ext.prtGetWarnNum();
+                                                let prtGetIsSendMsg =  EXT.prtGetIsSendMsg(),
+                                                    prtGetStockNum  =  EXT.prtGetStockNum(),
+                                                    prtGetWarnNum   =  EXT.prtGetWarnNum();
                                                     
                                                 if(prtGetIsSendMsg && prtGetStockNum === prtGetWarnNum ){
                                                     $.ajax({
-                                                        url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",  // 短信接口
+                                                        url: AJAX_URL,  // 短信接口
                                                         type: "POST",
                                                         data: {
                                                             "op": "MACHINE_SEND_WARN_SMS",
-                                                            "mobile": ext.prtGetPhone(), 
-                                                            "message": "纸质票少于" + ext.prtGetWarnNum() + "张！！！"
+                                                            "mobile": EXT.prtGetPhone(), 
+                                                            "message": "纸质票少于" + EXT.prtGetWarnNum() + "张！！！"
                                                         },
                                                         dataType: "jsonp",
                                                         jsonp:"callback",
@@ -164,12 +163,12 @@
                                                     })
                                                 }
                                                 // 成功后 3S 去跳转到成功页面
-                                                clearTimeout(goSuccessTimer);  // 取消跳转页面定时器
-                                                goSuccessTimer = setTimeout(()=>{
+                                                clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
+                                                GO_SUCCESS_TIMER = setTimeout(()=>{
                                                     _this.isLoading = false;
                                                     _this.loadingNotice = "";
                                                     _this.$router.push({name:'getsuccess'}); //
-                                                },3000);
+                                                },GO_SUCCESS_TIMER_MIN);
                                                  
                                             }
                                         }
@@ -193,7 +192,7 @@
                     },1000); 
 
                 }else{
-                    clearTimeout(leaveTimer);  // 关闭离开定时器 
+                    clearTimeout(LEAVE_TIMER);  // 关闭离开定时器 
                     swal({
                         title: "门票数量不够",
                         text: "请联系管理员哦",
@@ -201,10 +200,10 @@
                         confirmButtonText: "关闭"
                     },(isConfirm) => {
                         if(isConfirm){
-                            clearTimeout(leaveTimer);
-                            leaveTimer = setTimeout(() => {
+                            clearTimeout(LEAVE_TIMER);
+                            LEAVE_TIMER = setTimeout(() => {
                                 this.$router.push({name:'home'})
-                            }, leaveTimerMin);
+                            }, LEAVE_TIMER_MIN);
                         }
                     });
                 }
@@ -213,12 +212,12 @@
         },
         destroyed () {
             
-            clearTimeout(leaveTimer);      // 取消定时器
-            clearInterval(readCardTimer);  // 取消取卡信息定时器
-            clearTimeout(goSuccessTimer);  // 取消跳转页面定时器
+            clearTimeout(LEAVE_TIMER);      // 取消定时器
+            clearInterval(READ_CARD_TIMER);  // 取消取卡信息定时器
+            clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
             
-            if (ext && ext.isTicketSys == true) {
-                ext.idCancelRead();
+            if (EXT && EXT.isTicketSys == true) {
+                EXT.idCancelRead();
             }
         }
     }

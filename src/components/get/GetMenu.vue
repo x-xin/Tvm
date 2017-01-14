@@ -39,26 +39,26 @@
         mounted () {
             // 用户无操作，定时器开启，则返回首页
 
-            clearTimeout(leaveTimer);
+            clearTimeout(LEAVE_TIMER);
 
-            leaveTimer = setTimeout(() => {
+            LEAVE_TIMER = setTimeout(() => {
 
                 this.$router.push({name:'home'})
 
-            }, leaveTimerMin);
+            }, LEAVE_TIMER_MIN);
 
             document.body.onclick = () => {
-                clearTimeout(leaveTimer);
-                leaveTimer = setTimeout(() => {
+                clearTimeout(LEAVE_TIMER);
+                LEAVE_TIMER = setTimeout(() => {
 
                     this.$router.push({name:'home'})
 
-                }, leaveTimerMin);
+                }, LEAVE_TIMER_MIN);
             }
         },
         destroyed () {
             // 取消定时器
-            clearTimeout(leaveTimer);
+            clearTimeout(LEAVE_TIMER);
         }
 
     }

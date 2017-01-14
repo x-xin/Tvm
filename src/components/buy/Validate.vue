@@ -51,44 +51,44 @@
 
             // 用户无操作，定时器开启，则返回首页
 
-            clearTimeout(leaveTimer);
+            clearTimeout(LEAVE_TIMER);
 
-            leaveTimer = setTimeout(() => {
+            LEAVE_TIMER = setTimeout(() => {
 
                 this.$router.push({name:'home'})
 
-            }, leaveTimerMin);
+            }, LEAVE_TIMER_MIN);
 
             document.body.onclick = () => {
-                clearTimeout(leaveTimer);
+                clearTimeout(LEAVE_TIMER);
 
-                leaveTimer = setTimeout(() => {
+                LEAVE_TIMER = setTimeout(() => {
 
                     this.$router.push({name:'home'})
 
-                }, leaveTimerMin);
+                }, LEAVE_TIMER_MIN);
             }
 
-            if(ext && ext.isTicketSys == true && ext.prtGetStockNum()>2){
+            if(EXT && EXT.isTicketSys == true && EXT.prtGetStockNum()>2){
 
-                ext.idStartRead(); // 开始读身份证
+                EXT.idStartRead(); // 开始读身份证
                 
-                clearInterval(readCardTimer);
-                readCardTimer = setInterval(() => {
-                    if(ext.idReadIsOK() == 1){
-                        clearInterval(readCardTimer);
+                clearInterval(READ_CARD_TIMER);
+                READ_CARD_TIMER = setInterval(() => {
+                    if(EXT.idReadIsOK() == 1){
+                        clearInterval(READ_CARD_TIMER);
 
-                        clearTimeout(leaveTimer); // 关闭定时器
+                        clearTimeout(LEAVE_TIMER); // 关闭定时器
 
-                        this.userInfo.idname = ext.idGetName();
-                        this.userInfo.idnum = ext.idGetIDNum();
+                        this.userInfo.idname = EXT.idGetName();
+                        this.userInfo.idnum = EXT.idGetIDNum();
                         this.valida();
                         this.$router.push({name:'ticketslists'});
                     }
                 },1000); 
 
             }else{
-                clearTimeout(leaveTimer);  // 关闭离开定时器
+                clearTimeout(LEAVE_TIMER);  // 关闭离开定时器
                 swal({
                     title: "门票数量不够",
                     text: "请联系管理员哦",
@@ -96,23 +96,22 @@
                     confirmButtonText: "关闭"
                 },(isConfirm) => {
                     if(isConfirm){
-                        clearTimeout(leaveTimer);
-                        leaveTimer = setTimeout(() => {
+                        clearTimeout(LEAVE_TIMER);
+                        LEAVE_TIMER = setTimeout(() => {
                             this.$router.push({name:'home'})
-                        }, leaveTimerMin);
+                        }, LEAVE_TIMER_MIN);
                     }
                 });
             }
         },
         destroyed () {
 
-            clearTimeout(leaveTimer);     // 取消离开定时器
+            clearTimeout(LEAVE_TIMER);     // 取消离开定时器
 
-            clearInterval(readCardTimer);  // 取消取卡信息定时器
+            clearInterval(READ_CARD_TIMER);  // 取消取卡信息定时器
 
-            // var ext = window.external;
-            if (ext && ext.isTicketSys == true) {
-                ext.idCancelRead();
+            if (EXT && EXT.isTicketSys == true) {
+                EXT.idCancelRead();
             }
         }   
     }

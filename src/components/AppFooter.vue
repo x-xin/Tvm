@@ -18,12 +18,12 @@
                 <em class="close" @click="closeApp()">关闭软件</em>
                 <label class="remain">
                     <span>剩余纸质票数量</span>
-                    <input type="text" v-model="remain" maxlength="3" minlength="1">
+                    <input type="tEXT" v-model="remain" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <label class="max">
                     <span>数量预警值&emsp;&emsp;</span>
-                    <input type="text" v-model="max" maxlength="3" minlength="1">
+                    <input type="tEXT" v-model="max" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <p>当门票数量低于预警值时，可向管理员发送短信提醒。</p>
@@ -40,7 +40,7 @@
                 </label>
                 <label class="phone">
                     <span>短信发送号码</span>
-                    <input type="text" v-model="phone" maxlength="11" minlength="11">
+                    <input type="tEXT" v-model="phone" maxlength="11" minlength="11">
                 </label>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelSet()"></a><!-- 
@@ -68,18 +68,18 @@ export default {
     },
     methods: {
         closeApp () {
-            if(ext && ext.isTicketSys == true){
-                ext.sysShutdown();
+            if(EXT && EXT.isTicketSys == true){
+                EXT.sysShutdown();
             }
         },
         getAppData () {
-            if(ext && ext.isTicketSys == true){
-                this.remain = ext.prtGetStockNum();
-                this.max = ext.prtGetWarnNum();
-                this.phone = ext.prtGetPhone();
-                this.messnotice = ext.prtGetIsSendMsg();
+            if(EXT && EXT.isTicketSys == true){
+                this.remain = EXT.prtGetStockNum();
+                this.max = EXT.prtGetWarnNum();
+                this.phone = EXT.prtGetPhone();
+                this.messnotice = EXT.prtGetIsSendMsg();
             }
-            if(ext.isTicketSys == false){
+            if(EXT.isTicketSys == false){
                 console("is false");
             }
         },
@@ -94,7 +94,7 @@ export default {
         confirmLogin () {
             // 请求密码验证
             $.ajax({
-                url: "http://192.168.9.150:1955/service/gh_b1bc335cbc86/ticket",
+                url: AJAX_URL,
                 type: "POST",
                 data: {
                     "op"          :  "MACHINE_VERIFY_PWD",
@@ -127,11 +127,11 @@ export default {
         confirmSet () {
             //客户端交互数据
             let _this = this;
-            if(ext && ext.isTicketSys == true){
-                ext.prtSetStockNum(_this.remain);
-                ext.prtSetWarnNum(_this.max);
-                ext.prtSetPhone(_this.phone);
-                ext.prtSetIsSendMsg(_this.messnotice);
+            if(EXT && EXT.isTicketSys == true){
+                EXT.prtSetStockNum(_this.remain);
+                EXT.prtSetWarnNum(_this.max);
+                EXT.prtSetPhone(_this.phone);
+                EXT.prtSetIsSendMsg(_this.messnotice);
             }
             
             // 关掉弹窗
@@ -160,7 +160,7 @@ export default {
 
         p{
             line-height: 70px;
-            text-align: center;
+            tEXT-align: center;
             color: #999999;
             font-size: 20px;
         }
@@ -223,7 +223,7 @@ export default {
                 border:1px solid #ccc;
                 .border-radius(5px);
                 outline: none;
-                text-align: right;
+                tEXT-align: right;
                 overflow: hidden;
                 &::-ms-clear { display: none; }
                 &::-ms-reveal { display: none; }
@@ -253,7 +253,7 @@ export default {
                     padding-right: 10px;
                     color: #666;
                     font-size: 36px;
-                    text-align: left;
+                    tEXT-align: left;
                     font-weight: normal;
                 }
             }
@@ -261,7 +261,7 @@ export default {
         >P{
             font-size: 26px;
             color: #666;
-            text-align: left;
+            tEXT-align: left;
             margin:40px;
             line-height: 40px;
         }
@@ -287,7 +287,7 @@ export default {
             border:5px solid rgba(0, 0, 0, 0.2);
             .border-radius(5px);
             h2{
-                text-align: center;
+                tEXT-align: center;
                 font-size: 26px;
                 color: #333;
                 line-height: 120px;
@@ -312,7 +312,7 @@ export default {
             }
             >i{
                 display: block;
-                text-align: center;
+                tEXT-align: center;
                 color: red;
                 line-height: 50px;
             }
@@ -323,7 +323,7 @@ export default {
             left: 0;
             width: 100%;
             height: 70px;
-            text-align: center;
+            tEXT-align: center;
             a{
                 display: inline-block;
                 width: 178px;
