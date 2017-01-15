@@ -1,6 +1,6 @@
-# tvm
+# Tvm
 
-> This is tvm
+> This is tvm demo
 
 ## Build Setup
 
@@ -15,4 +15,44 @@ npm run dev
 npm run build
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## What's included
+Within the download you'll find the following directories and files.
+You'll see something like this:
+
+```
+├── build/
+│   ├── build.js                               // 运行 npm run build 配置等
+│   ├── check-version.js                       // 检查 node npm 版本信息
+│   ├── dev-client.js                          // 浏览器热刷新
+│   ├── dev-server.js                          // 代码热加载配置
+│   ├── mockData.js                            // mock数据模拟配置
+│   ├── utils.js                               // css-loader配置
+│   ├── webpack.base.conf.js                   // webpack打包基础配置
+│   ├── webpack.dev.conf.js                    // webpack打包开发环境配置
+│   ├── webpack.prod.conf.js                   // webpack打包生产环境配置
+├── config/
+│   ├── dev-env.js                             // 开发环境配置
+│   ├── index.js                               // 打包生成文件位置、端口、代理等设置
+│   ├── prod.env.js                            // 生产环境配置
+├── dist/                                      // 打包生成文件存放目录
+│   ├── static/                                // 打包的js、css、img文件
+│   ├── index.html                             // 实际访问主页面
+├── node_modules/                              // 你懂的
+├── src/                                       // 存放项目内容
+│   ├── assets/                                // 存放样式、图片、字体，可创建文件夹
+│   ├── components/                            // 组建，可创建文件夹
+│   ├── less/                                  // less 文件
+│   ├── App.vue                                // vue 主文件
+│   ├── main.js                                // 主文件
+├── static/                                    // 存放静态资源文件
+│   ├── .gitkeep                               // 用于static为空文件夹时可以提交
+├── .babelrc                                   // babel将ES6语法转为ES5
+├── .editorconfig                              // 语法风格等配置
+├── .gitgnore                                  // git 提交仓库忽略文件
+├── index.html                                 // 入口文件
+├── package.json                               // 依赖文件
+├── README.md                                  // 向导文件
+```
+
+## Other
+Thank you for your support and guidance.
