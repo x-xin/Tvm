@@ -4,7 +4,7 @@
         <div class="modal" v-if="showlogin">
             <div class="login">
                 <h2>请输入管理员密码</h2>
-                <input type="password" v-model="password" autofocus="true">
+                <input type="password" v-model="password" autofocus="true" maxlength="6" minlength="1">
                 <i class="error_msg" v-if="showErrorMsg">{{ errorMess }}</i>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelLogin()"></a><!-- 
@@ -18,12 +18,12 @@
                 <em class="close" @click="closeApp()">关闭软件</em>
                 <label class="remain">
                     <span>剩余纸质票数量</span>
-                    <input type="tEXT" v-model="remain" maxlength="3" minlength="1">
+                    <input type="text" v-model="remain" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <label class="max">
                     <span>数量预警值&emsp;&emsp;</span>
-                    <input type="tEXT" v-model="max" maxlength="3" minlength="1">
+                    <input type="text" v-model="max" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <p>当门票数量低于预警值时，可向管理员发送短信提醒。</p>
@@ -40,7 +40,7 @@
                 </label>
                 <label class="phone">
                     <span>短信发送号码</span>
-                    <input type="tEXT" v-model="phone" maxlength="11" minlength="11">
+                    <input type="text" v-model="phone" maxlength="11" minlength="11">
                 </label>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelSet()"></a><!-- 
