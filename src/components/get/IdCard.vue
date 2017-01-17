@@ -145,7 +145,7 @@
                                                         data: {
                                                             "op": "MACHINE_SEND_WARN_SMS",
                                                             "mobile": EXT.prtGetPhone(), 
-                                                            "message": "纸质票少于" + EXT.prtGetWarnNum() + "张！！！"
+                                                            "message": "【福建智慧旅游】缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
                                                         },
                                                         dataType: "jsonp",
                                                         jsonp:"callback",
