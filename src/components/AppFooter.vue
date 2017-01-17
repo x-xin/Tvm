@@ -4,7 +4,7 @@
         <div class="modal" v-if="showlogin">
             <div class="login">
                 <h2>请输入管理员密码</h2>
-                <input type="password" v-model="password" autofocus="true" maxlength="6" minlength="1">
+                <input type="password" v-model="password" autofocus="true" maxlength="6j" minlength="1">
                 <i class="error_msg" v-if="showErrorMsg">{{ errorMess }}</i>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelLogin()"></a><!-- 
