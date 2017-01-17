@@ -61,7 +61,7 @@ export default {
             max             :   126,   // 预警
             remain          :   999,// 剩余
             phone           :   "15880910182",
-            password        :   "366222",
+            password        :   "",
             errorMess       :   "",
             showErrorMsg    :   false
         }
@@ -90,6 +90,7 @@ export default {
         cancelLogin () {
             this.showlogin = false;
             this.showErrorMsg = false;
+            this.password = "";
         },
         confirmLogin () {
             // 请求密码验证
@@ -113,6 +114,7 @@ export default {
                         this.errorMess = data.message;
                         this.showErrorMsg = true
                     }
+                    this.password = "";
                 }),
                 error: ((xhr) => {
                     alert(xhr.status)
