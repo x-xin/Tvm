@@ -104,8 +104,9 @@
                                 url: AJAX_URL,  // 服务端获取数据是否可以打印
                                 type: "POST",
                                 data: {
-                                    "op": "MACHINE_FETCH_VOUCHER",
-                                    "certi_sn":_this.userInfo.idnum
+                                    "orgcode"   :  "143232453",
+                                    "op"        :  "MACHINE_FETCH_VOUCHER",
+                                    "certi_sn"  :  _this.userInfo.idnum
                                     // "id_card":{"sn":_this.userInfo.idnum,"name":_this.userInfo.idname}
                                 },
                                 dataType: "jsonp",
@@ -143,9 +144,10 @@
                                                         url: AJAX_URL,  // 短信接口
                                                         type: "POST",
                                                         data: {
-                                                            "op": "MACHINE_SEND_WARN_SMS",
-                                                            "mobile": EXT.prtGetPhone(), 
-                                                            "message": "【福建智慧旅游】缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
+                                                            "orgcode"  :  "143232453",
+                                                            "op"       :   "MACHINE_SEND_WARN_SMS",
+                                                            "mobile"   :   EXT.prtGetPhone(), 
+                                                            "message"  :   "缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
                                                         },
                                                         dataType: "jsonp",
                                                         jsonp:"callback",
@@ -159,7 +161,7 @@
                                                             }
                                                         }),
                                                         error: ((xhr) => {
-                                                            alert(xhr.status)
+                                                            console.log(xhr.status)
                                                         })
                                                     })
                                                 }
@@ -168,8 +170,9 @@
                                                     url: AJAX_URL,  
                                                     type: "POST",
                                                     data: {
-                                                        "op": "MACHINE_PRINT_CALL_BACK",
-                                                        "ticket_sn_map": {"0" : oneTickets.sn}
+                                                        "orgcode"       :   "143232453",
+                                                        "op"            :   "MACHINE_PRINT_CALL_BACK",
+                                                        "ticket_sn_map" :   {"0" : oneTickets.sn}
                                                     },
                                                     dataType: "jsonp",
                                                     jsonp:"callback",
@@ -192,7 +195,7 @@
                                                         }
                                                     }),
                                                     error: ((xhr) => {
-                                                        alert(xhr.status)
+                                                        console.log(xhr.status)
                                                     })
                                                 })
                                                  
@@ -202,19 +205,20 @@
                                         printTicket();
 
                                     }else{
-                                        // alert(data.message);
+                                        // console.log(data.message);
                                         clearTimeout(LEAVE_TIMER);  // 关闭离开定时器 
+                                        const msg = data.message.split("-")[1];
                                         swal({
-                                            title: "该身份证已取票",
-                                            text: data.message,
+                                            title: "取票失败",
+                                            text: msg,
                                             type: "error",
                                             confirmButtonText: "关闭"
                                         },(isConfirm) => {
                                             if(isConfirm){
-                                                clearTimeout(LEAVE_TIMER);
-                                                LEAVE_TIMER = setTimeout(() => {
-                                                    this.$router.push({name:'home'})
-                                                }, LEAVE_TIMER_MIN);
+                                                // clearTimeout(LEAVE_TIMER);
+                                                // LEAVE_TIMER = setTimeout(() => {
+                                                    this.$router.push({name:'getmenu'})
+                                                // }, LEAVE_TIMER_MIN);
                                             }
                                         });
                                     }
@@ -224,7 +228,7 @@
                                     this.isLoading = false
                                 }),
                                 error: ((xhr) => {
-                                    alert(xhr.status)
+                                    console.log(xhr.status)
                                 })
                             })
 
@@ -240,10 +244,10 @@
                         confirmButtonText: "关闭"
                     },(isConfirm) => {
                         if(isConfirm){
-                            clearTimeout(LEAVE_TIMER);
-                            LEAVE_TIMER = setTimeout(() => {
-                                this.$router.push({name:'home'})
-                            }, LEAVE_TIMER_MIN);
+                            // clearTimeout(LEAVE_TIMER);
+                            // LEAVE_TIMER = setTimeout(() => {
+                                this.$router.push({name:'getmenu'})
+                            // }, LEAVE_TIMER_MIN);
                         }
                     });
                 }

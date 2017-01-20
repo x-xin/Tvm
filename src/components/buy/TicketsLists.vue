@@ -119,6 +119,7 @@
                         url: AJAX_URL,  // 处理订单
                         type: "POST",
                         data: {
+                            "orgcode"     :  "143232453",
                             "op"          :  "MACHINE_ORDER_CREATE",
                             "id_card"     :  {"sn":this.user.idnum,"name":this.user.idname},
                             "product_car" :  dataobj,
@@ -143,15 +144,16 @@
                                     url: AJAX_URL,  // 支付订单
                                     type: "POST",
                                     data: {
-                                        "op": "MACHINE_PAY_AFTER",
-                                        "order_sn_map": {"0":data.data.order_sn_map[0],"1":data.data.order_sn_map[1]}
+                                        "orgcode"      :  "143232453",
+                                        "op"           :  "MACHINE_PAY_AFTER",
+                                        "order_sn_map" :  {"0":data.data.order_sn_map[0],"1":data.data.order_sn_map[1]}
                                     },
                                     dataType: "jsonp",
                                     jsonp:"callback",
                                     jsonpCallback: "handle",
                                     success: ((data) => {
-                                        // alert(data.code)
-                                        // alert(data);
+                                        // console.log(data.code)
+                                        // console.log(data);
                                         let oneTickets = data.data[0];
                             
                                         if(data.code === 1){
@@ -183,9 +185,10 @@
                                                             url: AJAX_URL,
                                                             type: "POST",
                                                             data: {
-                                                                "op": "MACHINE_SEND_WARN_SMS",
-                                                                "mobile": EXT.prtGetPhone(),
-                                                                "message": "【福建智慧旅游】缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
+                                                                "orgcode"  : "143232453",
+                                                                "op"       : "MACHINE_SEND_WARN_SMS",
+                                                                "mobile"   :  EXT.prtGetPhone(),
+                                                                "message"  :  "缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
                                                             },
                                                             dataType: "jsonp",
                                                             jsonp:"callback",
@@ -199,7 +202,7 @@
                                                                 }
                                                             }),
                                                             error: ((xhr) => {
-                                                                alert(xhr.status)
+                                                                console.log(xhr.status)
                                                             })
                                                         })
                                                     }
@@ -208,8 +211,9 @@
                                                         url: AJAX_URL,  
                                                         type: "POST",
                                                         data: {
-                                                            "op": "MACHINE_PRINT_CALL_BACK",
-                                                            "ticket_sn_map": {"0" : oneTickets.sn}
+                                                            "orgcode"        :  "143232453",
+                                                            "op"             :  "MACHINE_PRINT_CALL_BACK",
+                                                            "ticket_sn_map"  :  {"0" : oneTickets.sn}
                                                         },
                                                         dataType: "jsonp",
                                                         jsonp:"callback",
@@ -232,7 +236,7 @@
                                                             }
                                                         }),
                                                         error: ((xhr) => {
-                                                            alert(xhr.status)
+                                                            console.log(xhr.status)
                                                         })
                                                     })
                                                      
@@ -248,16 +252,17 @@
 
                                     }),
                                     error: ((xhr) => {
-                                        alert(xhr.status)
+                                        console.log(xhr.status)
                                     })
                                 })
 
                             }else{
-                                // alert(data.message);
+                                // console.log(data.message);
                                 clearTimeout(LEAVE_TIMER); // 数据处理开始关闭返回定时器
+                                const msg = data.message.split("-")[1];
                                 swal({
-                                    title: "该身份证已购过门票",
-                                    text: data.message,
+                                    title: "购票失败",
+                                    text: msg,
                                     type: "error",
                                     confirmButtonText: "关闭"
                                 },(isConfirm) => {
@@ -270,7 +275,7 @@
                             }
                         }),
                         error: ((xhr) => {
-                            alert(xhr.status);
+                            console.log(xhr.status);
                             // 定时器开启
                             LEAVE_TIMER = setTimeout(() => {
                                 this.$router.push({name:'home'})
@@ -342,7 +347,8 @@
                 url: AJAX_URL,  // 加载门票列表
                 type: "POST",
                 data: {
-                    "op": "MACHINE_TICKET_LIST"
+                    "orgcode"  :  "143232453",
+                    "op"       :   "MACHINE_TICKET_LIST"
                 },
                 dataType: "jsonp",
                 jsonp:"callback",
@@ -358,7 +364,7 @@
                     this.isLoading = false
                 }),
                 error: ((xhr) => {
-                    alert(xhr.status)
+                    console.log(xhr.status)
                 })
             })
         },

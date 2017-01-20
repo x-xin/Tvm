@@ -1,11 +1,12 @@
 <template>
     <div ref="swiper" class="swiper-container">
         <div class="swiper-wrapper">
-            <div class="swiper-slide">
-	            <img class="biglogo" src="../assets/banner/banner-2.jpg">
-            </div>
+
             <div class="swiper-slide">
 	            <img class="biglogo" src="../assets/banner/banner-1.jpg">
+            </div>
+            <div class="swiper-slide">
+	            <img class="biglogo" src="../assets/banner/banner-2.jpg">
             </div>
             <div class="swiper-slide">
 	            <img class="biglogo" src="../assets/banner/banner-3.jpg">
@@ -25,23 +26,15 @@ export default {
 			// 图片数据接口
 			// swiperinfo: [
 			// 	{
-			// 		imgsrc  :  "https://dummyimage.com/1080x720",
+			// 		imgsrc  :  "../assets/banner/banner-1.jpg",
 			// 		alt     :  "alt说明"
 			// 	},
 			// 	{
-			// 		imgsrc  :  "https://dummyimage.com/1080x720",
+			// 		imgsrc  :  "../assets/banner/banner-2.jpg",
 			// 		alt     :  "alt说明"
 			// 	},
 			// 	{
-			// 		imgsrc  :  "https://dummyimage.com/1080x720",
-			// 		alt     :  "alt说明"
-			// 	},
-			// 	{
-			// 		imgsrc  :  "https://dummyimage.com/1080x720",
-			// 		alt     :  "alt说明"
-			// 	},
-			// 	{
-			// 		imgsrc  :  "https://dummyimage.com/1080x720",
+			// 		imgsrc  :  "../assets/banner/banner-3.jpg",
 			// 		alt     :  "alt说明"
 			// 	}
 			// ]

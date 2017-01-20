@@ -96,10 +96,10 @@
                     confirmButtonText: "关闭"
                 },(isConfirm) => {
                     if(isConfirm){
-                        clearTimeout(LEAVE_TIMER);
-                        LEAVE_TIMER = setTimeout(() => {
+                        // clearTimeout(LEAVE_TIMER);
+                        // LEAVE_TIMER = setTimeout(() => {
                             this.$router.push({name:'home'})
-                        }, LEAVE_TIMER_MIN);
+                        // }, LEAVE_TIMER_MIN);
                     }
                 });
             }

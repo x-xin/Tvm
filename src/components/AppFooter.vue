@@ -98,6 +98,7 @@ export default {
                 url: AJAX_URL,
                 type: "POST",
                 data: {
+                    "orgcode"     :  "143232453",
                     "op"          :  "MACHINE_VERIFY_PWD",
                     "password"    :  this.password
                 },
@@ -117,7 +118,7 @@ export default {
                     this.password = "";
                 }),
                 error: ((xhr) => {
-                    alert(xhr.status)
+                    console.log(xhr.status)
                 })
             }) 
         },
