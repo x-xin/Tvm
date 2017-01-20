@@ -1,7 +1,7 @@
 <template>
     <div class="footer">
         <p>技术支持：厦门欣欣信息有限公司&福建智慧旅游有限公司&nbsp;&nbsp;<a @click="set()">设置</a></p>
-        <div class="modal" v-if="showlogin">
+        <div class="modal" v-if="showLogin">
             <div class="login">
                 <h2>请输入管理员密码</h2>
                 <input type="password" v-model="password" autofocus="true" maxlength="6j" minlength="1">
@@ -12,7 +12,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal" v-if="showset">
+        <div class="modal" v-if="showSet">
             <div class="set">
                 <h2>系统设置</h2>
                 <em class="close" @click="closeApp()">关闭软件</em>
@@ -29,13 +29,13 @@
                 <p>当门票数量低于预警值时，可向管理员发送短信提醒。</p>
                 <label class="message">
                     <span>短信提醒</span>
-                    <template v-if="messnotice">
-                        <span class="choice" @click="controlMessNotice()">开启</span><!-- 
-                     --><span class="choice unchoice" @click="controlMessNotice()">关闭</span>
+                    <template v-if="messNotice">
+                        <span class="choice" @click="controlmessNotice()">开启</span><!-- 
+                     --><span class="choice unchoice" @click="controlmessNotice()">关闭</span>
                     </template>
                     <template v-else>
-                        <span class="choice unchoice" @click="controlMessNotice()">开启</span><!-- 
-                     --><span class="choice" @click="controlMessNotice()">关闭</span>
+                        <span class="choice unchoice" @click="controlmessNotice()">开启</span><!-- 
+                     --><span class="choice" @click="controlmessNotice()">关闭</span>
                     </template>
                 </label>
                 <label class="phone">
@@ -55,11 +55,11 @@ export default {
     name: 'footer',
     data () {
         return {
-            showlogin       :   false,
-            showset         :   false,
-            messnotice      :   true,
-            max             :   126,   // 预警
-            remain          :   999,// 剩余
+            showLogin       :   false,
+            showSet         :   false,
+            messNotice      :   true,
+            max             :   0,   // 预警
+            remain          :   0,   // 剩余
             phone           :   "15880910182",
             password        :   "",
             errorMess       :   "",
@@ -77,18 +77,18 @@ export default {
                 this.remain = EXT.prtGetStockNum();
                 this.max = EXT.prtGetWarnNum();
                 this.phone = EXT.prtGetPhone();
-                this.messnotice = EXT.prtGetIsSendMsg();
+                this.messNotice = EXT.prtGetIsSendMsg();
             }
             if(EXT.isTicketSys == false){
                 console("is false");
             }
         },
         set () {
-            this.showlogin = true;
+            this.showLogin = true;
             this.getAppData();
         },
         cancelLogin () {
-            this.showlogin = false;
+            this.showLogin = false;
             this.showErrorMsg = false;
             this.password = "";
         },
@@ -109,8 +109,8 @@ export default {
                 success: ((data) => {
                     if(data.code === 1){
                         this.showErrorMsg = false
-                        this.showset = true
-                        this.showlogin = false
+                        this.showSet = true
+                        this.showLogin = false
                     }else{
                         this.errorMess = data.message;
                         this.showErrorMsg = true
@@ -124,7 +124,7 @@ export default {
         },
 
         cancelSet () {
-            this.showset = false
+            this.showSet = false
             this.getAppData();
         },
         confirmSet () {
@@ -134,15 +134,15 @@ export default {
                 EXT.prtSetStockNum(_this.remain);
                 EXT.prtSetWarnNum(_this.max);
                 EXT.prtSetPhone(_this.phone);
-                EXT.prtSetIsSendMsg(_this.messnotice);
+                EXT.prtSetIsSendMsg(_this.messNotice);
             }
             
             // 关掉弹窗
-            this.showset = false;
+            this.showSet = false;
 
         },
-        controlMessNotice () {
-            this.messnotice = !this.messnotice
+        controlmessNotice () {
+            this.messNotice = !this.messNotice
         }
     },
     mounted () {
