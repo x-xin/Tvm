@@ -25,7 +25,7 @@ You'll see something like this:
 │   ├── check-version.js                       // 检查 node npm 版本信息
 │   ├── dev-client.js                          // 浏览器热刷新
 │   ├── dev-server.js                          // 代码热加载配置
-│   ├── mockData.js                            // mock数据模拟配置
+│   ├── mockData.js                            // Mock数据模拟配置
 │   ├── utils.js                               // css-loader配置
 │   ├── webpack.base.conf.js                   // webpack打包基础配置
 │   ├── webpack.dev.conf.js                    // webpack打包开发环境配置
@@ -42,7 +42,7 @@ You'll see something like this:
 │   ├── assets/                                // 样式图片字体，可创建文件夹
 │   ├── components/                            // 组建，可创建文件夹
 │   ├── less/                                  // less 文件
-│   ├── router/                                // vue-router配置
+│   ├── router/                                // vue-router
 │   ├── App.vue                                // vue 主文件
 │   ├── main.js                                // 主文件
 ├── static/                                    // 存放静态资源文件
