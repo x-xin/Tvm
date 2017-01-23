@@ -1,5 +1,5 @@
 <template>
-    <router-view :user="userInfo" v-on:valida = "getUserInfo"></router-view>
+    <router-view></router-view>
 </template>
 <script>
     export default {
@@ -7,17 +7,6 @@
         data () {
             return {
                 //
-                userInfo:{
-                    idname: "",
-                    idnum: "" 
-                }
-            }
-        },
-        methods: {
-            getUserInfo (info) {
-                console.log(info.idname);
-                this.userInfo.idname = info.idname
-                this.userInfo.idnum = info.idnum
             }
         }
     }

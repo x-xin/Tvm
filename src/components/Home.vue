@@ -17,7 +17,28 @@
         name: 'home',
         data () {
             return {
-                hasnet: false
+                //
+            }
+        },
+        computed: {
+            idName () {
+                return this.$store.state.idName
+            },
+            idNum () {
+                return this.$store.state.idNum
+            },
+            totalTickets () {
+                return this.$store.state.totalTickets
+            }
+        },
+        mounted () {
+            if(EXT && EXT.isTicketSys == true){
+                this.$store.commit('initializeData', {
+                    totalTickets   :  EXT.prtGetStockNum(),
+                    warnTickets    :  EXT.prtGetWarnNum(),
+                    isMessNotice   :  EXT.prtGetIsSendMsg(),
+                    messPhone      :  EXT.prtGetPhone()
+                })
             }
         }
     }

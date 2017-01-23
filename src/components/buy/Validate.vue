@@ -36,15 +36,7 @@
         name: 'validate',
         data () {
             return {
-                userInfo:{
-                    idname   : "",
-                    idnum    : "" 
-                }
-            }
-        },
-        methods: {
-            valida () {
-                this.$emit("valida",{idname:this.userInfo.idname,idnum:this.userInfo.idnum})
+                //
             }
         },
         mounted () {
@@ -80,9 +72,11 @@
 
                         clearTimeout(LEAVE_TIMER); // 关闭定时器
 
-                        this.userInfo.idname = EXT.idGetName();
-                        this.userInfo.idnum = EXT.idGetIDNum();
-                        this.valida();
+                        this.$store.commit("identityCard",{
+                            idName : EXT.idGetName(),
+                            idNum : EXT.idGetIDNum(),
+                        });
+
                         this.$router.push({name:'ticketslists'});
                     }
                 },1000); 

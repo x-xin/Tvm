@@ -4,7 +4,7 @@
         <div class="modal" v-if="showLogin">
             <div class="login">
                 <h2>请输入管理员密码</h2>
-                <input type="password" v-model="password" autofocus="true" maxlength="6j" minlength="1">
+                <input type="password" v-model="password" autofocus="true" maxlength="6" minlength="1">
                 <i class="error_msg" v-if="showErrorMsg">{{ errorMess }}</i>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelLogin()"></a><!-- 
@@ -18,18 +18,18 @@
                 <em class="close" @click="closeApp()">关闭软件</em>
                 <label class="remain">
                     <span>剩余纸质票数量</span>
-                    <input type="text" v-model="remain" maxlength="3" minlength="1">
+                    <input type="text" v-model="totalTickets" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <label class="max">
                     <span>数量预警值&emsp;&emsp;</span>
-                    <input type="text" v-model="max" maxlength="3" minlength="1">
+                    <input type="text" v-model="warnTickets" maxlength="3" minlength="1">
                     <span>张</span>
                 </label>
                 <p>当门票数量低于预警值时，可向管理员发送短信提醒。</p>
                 <label class="message">
                     <span>短信提醒</span>
-                    <template v-if="messNotice">
+                    <template v-if="isMessNotice">
                         <span class="choice" @click="controlmessNotice()">开启</span><!-- 
                      --><span class="choice unchoice" @click="controlmessNotice()">关闭</span>
                     </template>
@@ -40,7 +40,7 @@
                 </label>
                 <label class="phone">
                     <span>短信发送号码</span>
-                    <input type="text" v-model="phone" maxlength="11" minlength="11">
+                    <input type="text" v-model="messPhone" maxlength="11" minlength="11">
                 </label>
                 <div class="home-set-btn">
                     <a class="set_cancel" @click="cancelSet()"></a><!-- 
@@ -57,13 +57,43 @@ export default {
         return {
             showLogin       :   false,
             showSet         :   false,
-            messNotice      :   true,
-            max             :   0,   // 预警
-            remain          :   0,   // 剩余
-            phone           :   "15880910182",
             password        :   "",
             errorMess       :   "",
             showErrorMsg    :   false
+        }
+    },
+    computed: {
+        isMessNotice : {
+            get () {
+                return this.$store.state.isMessNotice
+            },
+            set (value) {
+                this.$store.commit("updateIsMessNotice",value);
+            }
+        },
+        messPhone : {
+            get () {
+                return this.$store.state.messPhone
+            },
+            set (value) {
+                this.$store.commit("updateMessPhone",value);
+            }
+        },
+        totalTickets : {
+            get () {
+                return this.$store.state.totalTickets
+            },
+            set (value) {
+                this.$store.commit("updateTotalTickets",value);
+            }
+        },
+        warnTickets : {
+            get () {
+                return this.$store.state.warnTickets
+            },
+            set (value) {
+                this.$store.commit("updateWarnTickets",value);
+            }
         }
     },
     methods: {
@@ -74,18 +104,14 @@ export default {
         },
         getAppData () {
             if(EXT && EXT.isTicketSys == true){
-                this.remain = EXT.prtGetStockNum();
-                this.max = EXT.prtGetWarnNum();
-                this.phone = EXT.prtGetPhone();
-                this.messNotice = EXT.prtGetIsSendMsg();
-            }
-            if(EXT.isTicketSys == false){
-                console("is false");
+                this.totalTickets = EXT.prtGetStockNum();
+                this.warnTickets = EXT.prtGetWarnNum();
+                this.messPhone = EXT.prtGetPhone();
+                this.isMessNotice = EXT.prtGetIsSendMsg();
             }
         },
         set () {
             this.showLogin = true;
-            this.getAppData();
         },
         cancelLogin () {
             this.showLogin = false;
@@ -122,7 +148,6 @@ export default {
                 })
             }) 
         },
-
         cancelSet () {
             this.showSet = false
             this.getAppData();
@@ -131,10 +156,10 @@ export default {
             //客户端交互数据
             let _this = this;
             if(EXT && EXT.isTicketSys == true){
-                EXT.prtSetStockNum(_this.remain);
-                EXT.prtSetWarnNum(_this.max);
-                EXT.prtSetPhone(_this.phone);
-                EXT.prtSetIsSendMsg(_this.messNotice);
+                EXT.prtSetStockNum(_this.totalTickets);
+                EXT.prtSetWarnNum(_this.warnTickets);
+                EXT.prtSetPhone(_this.messPhone);
+                EXT.prtSetIsSendMsg(_this.isMessNotice);
             }
             
             // 关掉弹窗
@@ -142,11 +167,8 @@ export default {
 
         },
         controlmessNotice () {
-            this.messNotice = !this.messNotice
+            this.isMessNotice = !this.isMessNotice
         }
-    },
-    mounted () {
-        this.getAppData();
     }
 }
 </script>

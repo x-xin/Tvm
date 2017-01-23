@@ -53,10 +53,6 @@
         name: 'idcard',
         data () {
             return {
-                userInfo:{
-                    idname     :  "",
-                    idnum      :  "" 
-                },
                 isLoading      :  false,
                 loadingNotice  :  ""
             }
@@ -95,8 +91,10 @@
                             clearTimeout(LEAVE_TIMER);
                             clearInterval(READ_CARD_TIMER);
 
-                            this.userInfo.idname = EXT.idGetName()
-                            this.userInfo.idnum = EXT.idGetIDNum()
+                            this.$store.commit("identityCard",{
+                                idName : EXT.idGetName(),
+                                idNum : EXT.idGetIDNum(),
+                            });
                             // ajax data
                             // this.$router.push({name:'getsuccess'})
                             let _this = this;
@@ -106,14 +104,13 @@
                                 data: {
                                     "orgcode"   :  "143232453",
                                     "op"        :  "MACHINE_FETCH_VOUCHER",
-                                    "certi_sn"  :  _this.userInfo.idnum
+                                    "certi_sn"  :  _this.$store.state.idNum
                                     // "id_card":{"sn":_this.userInfo.idnum,"name":_this.userInfo.idname}
                                 },
                                 dataType: "jsonp",
                                 jsonp:"callback",
                                 jsonpCallback: "handle",
                                 success: ((data) => {
-                                    console.log(data)
                                     let oneTickets = data.data[0];
                                     if(data.code === 1){
                                         setTimeout(() => {
@@ -123,70 +120,39 @@
 
                                         // 票数减1
                                         EXT.prtSetStockNum(EXT.prtGetStockNum()-1);
+                                        // store data
+                                        let _this = this,
+                                            totalTickets = this.$store.state.totalTickets,
+                                            warnTickets = this.$store.state.warnTickets,
+                                            messPhone = this.$store.state.messPhone,
+                                            isMessNotice = this.$store.state.isMessNotice;
+
+                                        this.$store.commit("decrement");
 
                                         //开启打印接口，再跳转成功页面
-                                        function printTicket(){
-                                            if (EXT && EXT.isTicketSys == true) {
-                                                EXT.prtPageSetDirection(1);
-                                                EXT.prtPageSetShowInfo(1);
-                                                EXT.prtPageSetWidth(800);
-                                                EXT.prtPageSetHeight(1750);
-                                                EXT.prtPageSetPaddingLeft(1150);
-                                                EXT.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
+                                        if (EXT && EXT.isTicketSys == true) {
+                                            EXT.prtPageSetDirection(1);
+                                            EXT.prtPageSetShowInfo(1);
+                                            EXT.prtPageSetWidth(800);
+                                            EXT.prtPageSetHeight(1750);
+                                            EXT.prtPageSetPaddingLeft(1150);
+                                            EXT.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
 
-                                                // 发送短信提醒
-                                                let prtGetIsSendMsg =  EXT.prtGetIsSendMsg(),
-                                                    prtGetStockNum  =  EXT.prtGetStockNum(),
-                                                    prtGetWarnNum   =  EXT.prtGetWarnNum();
-                                                    
-                                                if(prtGetIsSendMsg && prtGetStockNum === prtGetWarnNum ){
-                                                    $.ajax({
-                                                        url: AJAX_URL,  // 短信接口
-                                                        type: "POST",
-                                                        data: {
-                                                            "orgcode"  :  "143232453",
-                                                            "op"       :   "MACHINE_SEND_WARN_SMS",
-                                                            "mobile"   :   EXT.prtGetPhone(), 
-                                                            "message"  :   "缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
-                                                        },
-                                                        dataType: "jsonp",
-                                                        jsonp:"callback",
-                                                        jsonpCallback: "handle",
-                                                        success: ((data) => {
-                                                            //
-                                                            if(data.code === 1){
-                                                                console.log(data.message);
-                                                            }else{
-                                                                console.log(data.message+"error");
-                                                            }
-                                                        }),
-                                                        error: ((xhr) => {
-                                                            console.log(xhr.status)
-                                                        })
-                                                    })
-                                                }
-                                                // 打印回调
+                                            // 发送短信提醒                                                  
+                                            if(isMessNotice && totalTickets === warnTickets ){
                                                 $.ajax({
-                                                    url: AJAX_URL,  
+                                                    url: AJAX_URL,  // 短信接口
                                                     type: "POST",
                                                     data: {
-                                                        "orgcode"       :   "143232453",
-                                                        "op"            :   "MACHINE_PRINT_CALL_BACK",
-                                                        "ticket_sn_map" :   {"0" : oneTickets.sn}
+                                                        "orgcode"  :  "143232453",
+                                                        "op"       :   "MACHINE_SEND_WARN_SMS",
+                                                        "mobile"   :   messPhone, 
+                                                        "message"  :   "缺纸预警：售票机编号01纸质门票已少于" + warnTickets + "张，请及时补足门票库存，谢谢！"
                                                     },
                                                     dataType: "jsonp",
                                                     jsonp:"callback",
                                                     jsonpCallback: "handle",
                                                     success: ((data) => {
-
-                                                        // 成功后 3S 去跳转到成功页面
-                                                        clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
-                                                        GO_SUCCESS_TIMER = setTimeout(()=>{
-                                                            _this.isLoading = false;
-                                                            _this.loadingNotice = "";
-                                                            _this.$router.push({name:'getsuccess'}); //
-                                                        },GO_SUCCESS_TIMER_MIN);
-
                                                         //
                                                         if(data.code === 1){
                                                             console.log(data.message);
@@ -198,11 +164,41 @@
                                                         console.log(xhr.status)
                                                     })
                                                 })
-                                                 
                                             }
-                                        }
+                                            // 打印回调
+                                            $.ajax({
+                                                url: AJAX_URL,  
+                                                type: "POST",
+                                                data: {
+                                                    "orgcode"       :   "143232453",
+                                                    "op"            :   "MACHINE_PRINT_CALL_BACK",
+                                                    "ticket_sn_map" :   {"0" : oneTickets.sn}
+                                                },
+                                                dataType: "jsonp",
+                                                jsonp:"callback",
+                                                jsonpCallback: "handle",
+                                                success: ((data) => {
 
-                                        printTicket();
+                                                    // 成功后 3S 去跳转到成功页面
+                                                    clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
+                                                    GO_SUCCESS_TIMER = setTimeout(()=>{
+                                                        _this.isLoading = false;
+                                                        _this.loadingNotice = "";
+                                                        _this.$router.push({name:'getsuccess'}); //
+                                                    },GO_SUCCESS_TIMER_MIN);
+
+                                                    //
+                                                    if(data.code === 1){
+                                                        console.log(data.message);
+                                                    }else{
+                                                        console.log(data.message+"error");
+                                                    }
+                                                }),
+                                                error: ((xhr) => {
+                                                    console.log(xhr.status)
+                                                })
+                                            }) 
+                                        }
 
                                     }else{
                                         // console.log(data.message);

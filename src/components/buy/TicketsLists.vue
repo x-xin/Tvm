@@ -83,7 +83,6 @@
                 loadingNotice   :    ""
             }
         },
-        props: ['user'],
         methods: {
             choice (item,index) { 
 
@@ -121,7 +120,7 @@
                         data: {
                             "orgcode"     :  "143232453",
                             "op"          :  "MACHINE_ORDER_CREATE",
-                            "id_card"     :  {"sn":this.user.idnum,"name":this.user.idname},
+                            "id_card"     :  {"sn":this.identityMess.idNum,"name":this.identityMess.idName},
                             "product_car" :  dataobj,
                             "paid"        :  this.redata[1]
                         },
@@ -152,82 +151,48 @@
                                     jsonp:"callback",
                                     jsonpCallback: "handle",
                                     success: ((data) => {
-                                        // console.log(data.code)
-                                        // console.log(data);
                                         let oneTickets = data.data[0];
-                            
                                         if(data.code === 1){
 
                                             // loading 开启
-
                                             this.isLoading = true;
                                             this.loadingNotice = "正在处理打印";
 
                                             //开启打印接口，再跳转成功页面
-                                            let _this = this;
-                                            function printTicket(){
-                                                if (EXT && EXT.isTicketSys == true) {
-                                                    // 票数减1
-                                                    EXT.prtSetStockNum(EXT.prtGetStockNum()-1);
-                                                    EXT.prtPageSetDirection(1);
-                                                    EXT.prtPageSetShowInfo(1);
-                                                    EXT.prtPageSetWidth(800);
-                                                    EXT.prtPageSetHeight(1750);
-                                                    EXT.prtPageSetPaddingLeft(1150);
-                                                    EXT.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
-                                                    // 发送短信提醒
-                                                    let prtGetIsSendMsg =  EXT.prtGetIsSendMsg(),
-                                                        prtGetStockNum  =  EXT.prtGetStockNum(),
-                                                        prtGetWarnNum   =  EXT.prtGetWarnNum();
+                                            let _this = this,
+                                                totalTickets = this.$store.state.totalTickets,
+                                                warnTickets = this.$store.state.warnTickets,
+                                                messPhone = this.$store.state.messPhone,
+                                                isMessNotice = this.$store.state.isMessNotice;
 
-                                                    if(prtGetIsSendMsg && prtGetStockNum === prtGetWarnNum ){
-                                                        $.ajax({
-                                                            url: AJAX_URL,
-                                                            type: "POST",
-                                                            data: {
-                                                                "orgcode"  : "143232453",
-                                                                "op"       : "MACHINE_SEND_WARN_SMS",
-                                                                "mobile"   :  EXT.prtGetPhone(),
-                                                                "message"  :  "缺纸预警：售票机编号01纸质门票已少于" + EXT.prtGetWarnNum() + "张，请及时补足门票库存，谢谢！"
-                                                            },
-                                                            dataType: "jsonp",
-                                                            jsonp:"callback",
-                                                            jsonpCallback: "handle",
-                                                            success: ((data) => {
-                                                                //
-                                                                if(data.code === 1){
-                                                                    console.log(data.message);
-                                                                }else{
-                                                                    console.log(data.message+"error");
-                                                                }
-                                                            }),
-                                                            error: ((xhr) => {
-                                                                console.log(xhr.status)
-                                                            })
-                                                        })
-                                                    }
-                                                    // 打印回调
+                                            if (EXT && EXT.isTicketSys == true) {
+                                                // 票数减1
+                                                EXT.prtSetStockNum(EXT.prtGetStockNum()-1);
+                                                EXT.prtPageSetDirection(1);
+                                                EXT.prtPageSetShowInfo(1);
+                                                EXT.prtPageSetWidth(800);
+                                                EXT.prtPageSetHeight(1750);
+                                                EXT.prtPageSetPaddingLeft(1150);
+                                                EXT.prtPagePrintTicket(oneTickets.cmp, oneTickets.cat, oneTickets.date, oneTickets.num, oneTickets.sn);
+
+                                                // store data
+                                                _this.$store.commit("decrement")
+
+                                                // 发送短信提醒
+                                                if(isMessNotice && totalTickets === warnTickets ){
                                                     $.ajax({
-                                                        url: AJAX_URL,  
+                                                        url: AJAX_URL,
                                                         type: "POST",
                                                         data: {
-                                                            "orgcode"        :  "143232453",
-                                                            "op"             :  "MACHINE_PRINT_CALL_BACK",
-                                                            "ticket_sn_map"  :  {"0" : oneTickets.sn}
+                                                            "orgcode"  : "143232453",
+                                                            "op"       : "MACHINE_SEND_WARN_SMS",
+                                                            "mobile"   :  messPhone,
+                                                            "message"  :  "缺纸预警：售票机编号01纸质门票已少于" + warnTickets + "张，请及时补足门票库存，谢谢！"
                                                         },
                                                         dataType: "jsonp",
                                                         jsonp:"callback",
                                                         jsonpCallback: "handle",
                                                         success: ((data) => {
-
-                                                            // 回到成功页面
-                                                            clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
-                                                            GO_SUCCESS_TIMER = setTimeout(()=>{
-                                                                _this.isLoading = false;
-                                                                _this.loadingNotice = "";
-                                                                _this.$router.push({name:'buysuccess'}); //
-                                                            },GO_SUCCESS_TIMER_MIN);
-
                                                             //
                                                             if(data.code === 1){
                                                                 console.log(data.message);
@@ -239,23 +204,53 @@
                                                             console.log(xhr.status)
                                                         })
                                                     })
-                                                     
                                                 }
-                                            }
 
-                                            printTicket();
+                                                // 打印回调
+                                                $.ajax({
+                                                    url: AJAX_URL,  
+                                                    type: "POST",
+                                                    data: {
+                                                        "orgcode"        :  "143232453",
+                                                        "op"             :  "MACHINE_PRINT_CALL_BACK",
+                                                        "ticket_sn_map"  :  {"0" : oneTickets.sn}
+                                                    },
+                                                    dataType: "jsonp",
+                                                    jsonp:"callback",
+                                                    jsonpCallback: "handle",
+                                                    success: ((data) => {
+
+                                                        // 回到成功页面
+                                                        clearTimeout(GO_SUCCESS_TIMER);  // 取消跳转页面定时器
+                                                        GO_SUCCESS_TIMER = setTimeout(()=>{
+                                                            _this.isLoading = false;
+                                                            _this.loadingNotice = "";
+                                                            _this.$router.push({name:'buysuccess'}); //
+                                                        },GO_SUCCESS_TIMER_MIN);
+
+                                                        //
+                                                        if(data.code === 1){
+                                                            console.log(data.message);
+                                                        }else{
+                                                            console.log(data.message+"error");
+                                                        }
+                                                    }),
+                                                    error: ((xhr) => {
+                                                        console.log(xhr.status)
+                                                    })
+                                                })
+
+                                            }
 
                                         }else{
                                             console.log(data.message);
                                         }
-
 
                                     }),
                                     error: ((xhr) => {
                                         console.log(xhr.status)
                                     })
                                 })
-
                             }else{
                                 // console.log(data.message);
                                 clearTimeout(LEAVE_TIMER); // 数据处理开始关闭返回定时器
@@ -320,7 +315,15 @@
                     }
                 }
                 return this.ticketslists
+            },
+            // 身份信息
+            identityMess () {
+                return {
+                    idName : this.$store.state.idName,
+                    idNum  : this.$store.state.idNum,
+                }
             }
+
         },
         mounted () {
 
