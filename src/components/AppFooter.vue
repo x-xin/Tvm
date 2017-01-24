@@ -51,6 +51,7 @@
     </div>
 </template>
 <script>
+import $ from 'jquery'  // ajax
 export default {
     name: 'footer',
     data () {
